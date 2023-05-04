@@ -28,7 +28,7 @@ namespace RPGame.Scipts
             this.texture = texture;
 
             pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
-            size = new Point(Window.ClientBounds.Width / 30, Window.ClientBounds.Width / 20);
+            size = new Point(Window.ClientBounds.X / 30, Window.ClientBounds.Y / 20);
             inputHandler = new PlayerInputHandler(pos, hitBox);
         }
 
