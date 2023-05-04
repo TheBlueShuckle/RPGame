@@ -23,9 +23,9 @@ namespace RPGame.Scipts
 
             tileLength = Window.ClientBounds.Width / 20;
 
-            for (int y = 0; y == 30; y++)
+            for (int y = 0; y < 30; y++)
             {
-                for (int x = 0; x == 40; x++)
+                for (int x = 0; x < 40; x++)
                 {
                     tileGrid[x, y] = new Vector2(x * tileLength, y * tileLength);
                 }
@@ -40,15 +40,15 @@ namespace RPGame.Scipts
 
         public void Draw()
         {
-            foreach (Tile tile in tiles)
-            {
-                tile.Draw();
-            }
-
             foreach (Vector2 tilePos in tileGrid)
             {
                 spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(tileLength, tileLength)), Color.Black);
                 spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(tileLength - 2, tileLength - 2)), Color.White);
+            }
+
+            foreach (Tile tile in tiles)
+            {
+                tile.Draw();
             }
         }
 
