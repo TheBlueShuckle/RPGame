@@ -31,7 +31,7 @@ namespace RPGame.Scipts
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
 
-            sceneHandler = new SceneHandler(spriteBatch, graphics, texture);
+            sceneHandler = new SceneHandler();
         }
 
         protected override void Update(GameTime gameTime)
@@ -51,7 +51,7 @@ namespace RPGame.Scipts
             
             spriteBatch.Begin();
 
-            sceneHandler.GetCurrentScene().Draw();
+            sceneHandler.GetCurrentScene().Draw(spriteBatch, texture);
 
             spriteBatch.End();
 

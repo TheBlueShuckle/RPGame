@@ -15,14 +15,31 @@ namespace RPGame.Scipts.Scenes
         List<Tile> impassableTiles;
 
 
-        public Scene1(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture) : base(spriteBatch, graphics, texture)
+        public Scene1() : base()
         {
             this.spriteBatch = spriteBatch;
             this.graphics = graphics;
             this.texture = texture;
 
-            player = new Player(spriteBatch, graphics, texture);
-            map = new Map(spriteBatch, graphics, texture);
+            player = new Player();
+            map = new Map();
+
+            map.GenerateMap(new int[,]
+            {
+                {2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3},
+                {4, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3},
+                {4, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3},
+                {4, 4, 2, 2, 2, 1, 2, 2, 2, 3, 3, 3, 4, 4, 3, 3, 3, 1, 3, 3},
+                {4, 4, 2, 2, 2, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 3, 3, 1, 3, 3},
+                {4, 4, 2, 2, 2, 1, 1, 2, 3, 3, 3, 4, 4, 4, 4, 3, 1, 1, 3, 3},
+                {4, 4, 4, 2, 2, 2, 1, 2, 3, 3, 3, 4, 4, 4, 4, 3, 1, 3, 3, 3},
+                {4, 4, 4, 2, 2, 2, 1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 1, 3, 3, 3},
+                {4, 4, 2, 2, 2, 2, 1, 1, 2, 3, 3, 3, 3, 3, 3, 1, 1, 1, 3, 3},
+                {4, 4, 2, 2, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 1, 1, 3, 1, 1, 3},
+                {4, 4, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 3, 3, 3, 1, 3},
+                {4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3}
+            }
+            );
 
             impassableTiles = map.GetImpassableTiles();
         }
@@ -32,10 +49,10 @@ namespace RPGame.Scipts.Scenes
             player.Update(gameTime, impassableTiles);
         }
 
-        public override void Draw()
+        public override void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            map.Draw();
-            player.Draw();
+            map.Draw(spriteBatch, texture);
+            player.Draw(spriteBatch, texture);
         }
     }
 }

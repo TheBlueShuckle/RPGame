@@ -6,7 +6,7 @@ namespace RPGame.Scipts.Scenes
 {
     internal class Scene : Main
     {
-        public Scene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture)
+        public Scene()
         {
 
         }
@@ -16,7 +16,7 @@ namespace RPGame.Scipts.Scenes
 
         }
 
-        public virtual void Draw()
+        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
 
         }

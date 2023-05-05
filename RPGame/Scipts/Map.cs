@@ -8,47 +8,49 @@ namespace RPGame.Scipts
     {
         static int tileLength { get; set; }
 
-        SpriteBatch spriteBatch;
-        GraphicsDeviceManager graphics;
-        Texture2D texture;
-
         List<Tile> tiles = new List<Tile>();
         Vector2[,] tileGrid = new Vector2[40, 30];
 
-        public Map(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture)
+        public Map()
         {
-            this.spriteBatch = spriteBatch;
-            this.graphics = graphics;
-            this.texture = texture;
-
             tileLength = Window.ClientBounds.Width / 20;
 
-            for (int y = 0; y < 30; y++)
+            for (int y = 0; y < tileGrid.GetLength(1); y++)
             {
-                for (int x = 0; x < 40; x++)
+                for (int x = 0; x < tileGrid.GetLength(0); x++)
                 {
                     tileGrid[x, y] = new Vector2(x * tileLength, y * tileLength);
                 }
             }
-
-            tiles.Add(new Tile(spriteBatch, graphics, texture, tileLength, Color.Green, new Vector2(0, 0), true));
-            tiles.Add(new Tile(spriteBatch, graphics, texture, tileLength, Color.SandyBrown, new Vector2(tileLength, 0), true));
-            tiles.Add(new Tile(spriteBatch, graphics, texture, tileLength, Color.Blue, new Vector2(2 * tileLength, 0), false));
-            tiles.Add(new Tile(spriteBatch, graphics, texture, tileLength, Color.Green, new Vector2(0, tileLength), true));
-            tiles.Add(new Tile(spriteBatch, graphics, texture, tileLength, Color.SandyBrown, new Vector2(0, 2 * tileLength), true));
         }
 
-        public void Draw()
+        public void GenerateMap(int[,] map)
+        {
+            for (int x = 0; x < map.GetLength(0); x++)
+            {
+                for (int y = 0; y < map.GetLength(1); y++)
+                {
+                    int number = map[x, y];
+
+                    if (number > 0)
+                    {
+                        tiles.Add(new Tile(number, new Rectangle(y * tileLength, x * tileLength, tileLength, tileLength)));
+                    }
+                }
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
             foreach (Vector2 tilePos in tileGrid)
             {
                 spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(tileLength, tileLength)), Color.Black);
-                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(tileLength - 2, tileLength - 2)), Color.White);
+                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(tileLength - 2, tileLength - 2)), Color.CornflowerBlue);
             }
 
             foreach (Tile tile in tiles)
             {
-                tile.Draw();
+                tile.Draw(spriteBatch, texture);
             }
         }
 

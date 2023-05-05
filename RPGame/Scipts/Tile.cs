@@ -1,35 +1,53 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace RPGame.Scipts
 {
     internal class Tile
     {
-        SpriteBatch spriteBatch;
-        GraphicsDeviceManager graphics;
-        Texture2D texture;
+        const int PATH = 1, GRASS = 2, TREES = 3, WATER = 4;
 
-        int tileLength;
+        Rectangle rectangle;
         Color color;
-        Vector2 pos;
         bool passable;
 
-        public Tile(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture, int tileLength, Color color, Vector2 pos, bool passable)
+        public Tile(int material, Rectangle rectangle)
         {
-            this.spriteBatch = spriteBatch;
-            this.graphics = graphics;
-            this.texture = texture;
-
-            this.tileLength = tileLength;
-            this.color = color;
-            this.pos = pos;
-            this.passable = passable;
+            this.rectangle = rectangle;
+            SetProperties(material);
         }
 
-        public void Draw()
+        private void SetProperties(int material)
         {
-            spriteBatch.Draw(texture, new Rectangle(pos.ToPoint(), new Point(tileLength, tileLength)), color);
+            switch (material)
+            {
+                case PATH:
+                    color = Color.SandyBrown;
+                    passable = true;
+                    break;
+
+                case GRASS:
+                    color = Color.Green;
+                    passable = true;
+                    break;
+                
+                case TREES:
+                    color = Color.DarkGreen;
+                    passable = false;
+                    break;
+                
+                case WATER:
+                    color = Color.Blue;
+                    passable = false;
+                    break;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        {
+            spriteBatch.Draw(texture, rectangle, color);
         }
 
         public bool GetPassability()

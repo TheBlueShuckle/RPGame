@@ -12,23 +12,16 @@ namespace RPGame.Scipts
 {
     internal class Player : Main
     {
-        SpriteBatch spriteBatch;
-        GraphicsDeviceManager graphicsDeviceManager;
         PlayerInputHandler inputHandler;
 
         Vector2 pos;
         Point size;
         Rectangle hitBox;
-        Texture2D texture;
 
-        public Player(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture)
+        public Player()
         {
-            this.spriteBatch = spriteBatch;
-            this.graphicsDeviceManager = graphics;
-            this.texture = texture;
-
             pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
-            size = new Point(Window.ClientBounds.X / 30, Window.ClientBounds.Y / 20);
+            size = new Point(20, 40);
             inputHandler = new PlayerInputHandler(pos, hitBox);
         }
 
@@ -39,7 +32,7 @@ namespace RPGame.Scipts
             hitBox = new Rectangle(pos.ToPoint(), size);
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
             spriteBatch.Draw(texture, hitBox, Color.Red);
         }
