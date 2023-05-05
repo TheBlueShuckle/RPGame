@@ -6,10 +6,6 @@ namespace RPGame.Scipts.Scenes
 {
     internal class Scene1 : Scene
     {
-        SpriteBatch spriteBatch;
-        GraphicsDeviceManager graphics;
-        Texture2D texture;
-
         Player player;
         Map map;
         List<Tile> impassableTiles;
@@ -17,10 +13,6 @@ namespace RPGame.Scipts.Scenes
 
         public Scene1() : base()
         {
-            this.spriteBatch = spriteBatch;
-            this.graphics = graphics;
-            this.texture = texture;
-
             player = new Player();
             map = new Map();
 
