@@ -21,7 +21,7 @@ namespace RPGame.Scipts
         public Player()
         {
             pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
-            size = new Point(20, 30);
+            size = new Point(Window.ClientBounds.X / 40, Window.ClientBounds.X / 20);
             hitBox = new Rectangle(pos.ToPoint(), size);
             inputHandler = new PlayerInputHandler(pos);
         }
