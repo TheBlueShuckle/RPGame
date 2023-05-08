@@ -54,5 +54,10 @@ namespace RPGame.Scipts
         {
             return passable;
         }
+
+        public Rectangle GetRectangle()
+        {
+            return rectangle;
+        }
     }
 }

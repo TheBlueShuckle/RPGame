@@ -22,6 +22,11 @@ namespace RPGame.Scipts
         protected override void Initialize()
         {
             base.Initialize();
+
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
         }
 
         protected override void LoadContent()
@@ -49,7 +54,7 @@ namespace RPGame.Scipts
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             sceneHandler.GetCurrentScene().Draw(spriteBatch, texture);
 

@@ -60,7 +60,7 @@ namespace RPGame.Scipts
 
             foreach (Tile tile in tiles)
             {
-                if (tile.GetPassability())
+                if (tile.GetPassability() == false)
                 {
                     impassableTiles.Add(tile);
                 }

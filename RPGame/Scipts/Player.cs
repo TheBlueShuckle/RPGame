@@ -22,12 +22,13 @@ namespace RPGame.Scipts
         {
             pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
             size = new Point(20, 40);
-            inputHandler = new PlayerInputHandler(pos, hitBox);
+            hitBox = new Rectangle(pos.ToPoint(), size);
+            inputHandler = new PlayerInputHandler(pos);
         }
 
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
-            inputHandler.Movement(gameTime.ElapsedGameTime.TotalSeconds, impassableTiles);
+            inputHandler.Movement(gameTime.ElapsedGameTime.TotalSeconds, hitBox, impassableTiles);
             pos = inputHandler.PlayerPos;
             hitBox = new Rectangle(pos.ToPoint(), size);
         }
