@@ -24,41 +24,80 @@ namespace RPGame.Scipts
 
         public void Movement(double deltaTime, Rectangle hitBox, List<Tile> impassabeTiles)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && !CheckTop(hitBox, impassabeTiles))
+            //Move up doesnt work
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && !CollidingDown(hitBox, impassabeTiles))
             {
                 playerPos.Y -= SPEED * (float)deltaTime;
+                CorrectTop(hitBox, impassabeTiles);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && !CheckBottom(hitBox, impassabeTiles))
+            //Move down
+            if (Keyboard.GetState().IsKeyDown(Keys.S) && !CollidingUp(hitBox, impassabeTiles))
             {
                 playerPos.Y += SPEED * (float)deltaTime;
+                CorrectBottom(hitBox, impassabeTiles);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D) && !CheckLeft(hitBox, impassabeTiles))
+            //Move right
+            if (Keyboard.GetState().IsKeyDown(Keys.D) && !CollidingRight(hitBox, impassabeTiles))
             {
                 playerPos.X += SPEED * (float)deltaTime;
+                CorrectRight(hitBox, impassabeTiles);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A) && !CheckRight(hitBox, impassabeTiles))
+            //Move left doesnt work
+            if (Keyboard.GetState().IsKeyDown(Keys.A) && !CollidingLeft(hitBox, impassabeTiles))
             {
                 playerPos.X -= SPEED * (float)deltaTime;
+                CorrectLeft(hitBox, impassabeTiles);
             }
         }
 
-        private bool CheckBottom(Rectangle hitBox, List<Tile> impassabeTiles)
+        private void CorrectTop(Rectangle hitBox, List<Tile> impassabeTiles) //*
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (RectangleHelper.TouchBottom(hitBox, tile.GetRectangle()))
+                if (RectangleHelper.TouchTop(hitBox, tile.GetRectangle()))
                 {
-                    return true;
+                    playerPos.Y = tile.GetRectangle().Bottom;
                 }
             }
-
-            return false;
         }
 
-        private bool CheckTop(Rectangle hitBox, List<Tile> impassabeTiles)
+        private void CorrectBottom(Rectangle hitBox, List<Tile> impassabeTiles)
+        {
+            foreach (Tile tile in impassabeTiles)
+            {
+                if(RectangleHelper.TouchBottom(hitBox, tile.GetRectangle()))
+                {
+                    playerPos.Y = tile.GetRectangle().Top - hitBox.Height;
+                }
+            }
+        }
+
+        private void CorrectRight(Rectangle hitBox, List<Tile> impassabeTiles)
+        {
+            foreach (Tile tile in impassabeTiles)
+            {
+                if (RectangleHelper.TouchToRight(hitBox, tile.GetRectangle()))
+                {
+                    playerPos.X = tile.GetRectangle().Left - hitBox.Width;
+                }
+            }
+        }
+
+        private void CorrectLeft(Rectangle hitBox, List<Tile> impassabeTiles) //*
+        {
+            foreach (Tile tile in impassabeTiles)
+            {
+                if (RectangleHelper.TouchToLeft(hitBox, tile.GetRectangle()))
+                {
+                    playerPos.X = tile.GetRectangle().Right;
+                }
+            }
+        }
+
+        private bool CollidingDown(Rectangle hitBox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
@@ -71,11 +110,11 @@ namespace RPGame.Scipts
             return false;
         }
 
-        private bool CheckLeft(Rectangle hitBox, List<Tile> impassabeTiles)
+        private bool CollidingUp(Rectangle hitBox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (RectangleHelper.TouchToLeft(hitBox, tile.GetRectangle()))
+                if (RectangleHelper.TouchBottom(hitBox, tile.GetRectangle()))
                 {
                     return true;
                 }
@@ -84,11 +123,24 @@ namespace RPGame.Scipts
             return false;
         }
 
-        private bool CheckRight(Rectangle hitBox, List<Tile> impassabeTiles)
+        private bool CollidingRight(Rectangle hitBox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
                 if (RectangleHelper.TouchToRight(hitBox, tile.GetRectangle()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool CollidingLeft(Rectangle hitBox, List<Tile> impassabeTiles)
+        {
+            foreach (Tile tile in impassabeTiles)
+            {
+                if (RectangleHelper.TouchToLeft(hitBox, tile.GetRectangle()))
                 {
                     return true;
                 }
