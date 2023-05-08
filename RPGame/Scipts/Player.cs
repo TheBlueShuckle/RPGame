@@ -21,7 +21,7 @@ namespace RPGame.Scipts
         public Player()
         {
             pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
-            size = new Point(20, 40);
+            size = new Point(20, 30);
             hitBox = new Rectangle(pos.ToPoint(), size);
             inputHandler = new PlayerInputHandler(pos);
         }
@@ -35,7 +35,7 @@ namespace RPGame.Scipts
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            spriteBatch.Draw(texture, hitBox, Color.Red);
+            spriteBatch.Draw(texture, hitBox, Color.Yellow);
         }
     }
 }
