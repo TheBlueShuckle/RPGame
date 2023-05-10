@@ -11,17 +11,14 @@ namespace RPGame.Scipts
 
         Vector2 pos, size;
         Rectangle hitBox;
-        int tileSize;
 
         public Player(Rectangle windowSize, int tileSize)
         {
             pos = new Vector2(100, 100);
-            size = new Vector2(windowSize.Width / 60, (windowSize.Width / 48));
+            size = new Vector2(windowSize.Width / 128, (windowSize.Width / 96));
             hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
             inputHandler = new PlayerInputHandler(pos);
             inputHandler.Speed = tileSize * 3.3f;
-
-            this.tileSize = tileSize;
         }
 
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
