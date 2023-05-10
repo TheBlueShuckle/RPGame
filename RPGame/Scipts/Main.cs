@@ -10,6 +10,7 @@ namespace RPGame.Scipts
         private SpriteBatch spriteBatch;
         SceneHandler sceneHandler;
 
+        Rectangle windowSize;
         Texture2D texture;
 
         public Main()
@@ -22,11 +23,13 @@ namespace RPGame.Scipts
         protected override void Initialize()
         {
             base.Initialize();
-
+            
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
+            
+            windowSize = Window.ClientBounds;
         }
 
         protected override void LoadContent()
@@ -35,14 +38,17 @@ namespace RPGame.Scipts
 
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
-
-            sceneHandler = new SceneHandler();
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if(sceneHandler == null)
+            {
+                sceneHandler = new SceneHandler(windowSize);
+            }
 
             sceneHandler.GetCurrentScene().Update(gameTime);
 

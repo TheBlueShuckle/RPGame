@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
@@ -6,20 +7,19 @@ namespace RPGame.Scipts
 {
     internal class Map : Main
     {
-        static int tileLength { get; set; }
-
+        int tileSize;
         List<Tile> tiles = new List<Tile>();
-        Vector2[,] tileGrid = new Vector2[40, 30];
+        Vector2[,] tileGrid = new Vector2[64, 36];
 
-        public Map()
+        public Map(Rectangle windowSize)
         {
-            tileLength = Window.ClientBounds.Width / 20;
+            tileSize = windowSize.Width / 64;
 
             for (int y = 0; y < tileGrid.GetLength(1); y++)
             {
                 for (int x = 0; x < tileGrid.GetLength(0); x++)
                 {
-                    tileGrid[x, y] = new Vector2(x * tileLength, y * tileLength);
+                    tileGrid[x, y] = new Vector2(x * tileSize, y * tileSize);
                 }
             }
         }
@@ -34,7 +34,7 @@ namespace RPGame.Scipts
 
                     if (number > 0)
                     {
-                        tiles.Add(new Tile(number, new Rectangle(y * tileLength, x * tileLength, tileLength, tileLength)));
+                        tiles.Add(new Tile(number, new Rectangle(y * tileSize, x * tileSize, tileSize, tileSize)));
                     }
                 }
             }
@@ -44,8 +44,8 @@ namespace RPGame.Scipts
         {
             foreach (Vector2 tilePos in tileGrid)
             {
-                spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(tileLength, tileLength)), Color.Black);
-                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(tileLength - 2, tileLength - 2)), Color.CornflowerBlue);
+                spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(tileSize, tileSize)), Color.Black);
+                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(tileSize - 2, tileSize - 2)), Color.CornflowerBlue);
             }
 
             foreach (Tile tile in tiles)
@@ -67,6 +67,11 @@ namespace RPGame.Scipts
             }
 
             return impassableTiles;
+        }
+
+        public int GetTileSize()
+        {
+            return tileSize;
         }
     }
 }

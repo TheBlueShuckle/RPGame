@@ -5,27 +5,30 @@ using System.Collections.Generic;
 
 namespace RPGame.Scipts
 {
-    internal class Player : Main
+    internal class Player
     {
         PlayerInputHandler inputHandler;
 
-        Vector2 pos;
-        Point size;
+        Vector2 pos, size;
         Rectangle hitBox;
+        int tileSize;
 
-        public Player()
+        public Player(Rectangle windowSize, int tileSize)
         {
-            pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
-            size = new Point(Window.ClientBounds.X / 40, Window.ClientBounds.X / 20);
-            hitBox = new Rectangle(pos.ToPoint(), size);
+            pos = new Vector2(100, 100);
+            size = new Vector2(windowSize.Width / 60, (windowSize.Width / 48));
+            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
             inputHandler = new PlayerInputHandler(pos);
+            inputHandler.Speed = tileSize * 3.3f;
+
+            this.tileSize = tileSize;
         }
 
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
             inputHandler.Movement(gameTime.ElapsedGameTime.TotalSeconds, hitBox, impassableTiles);
             pos = inputHandler.PlayerPos;
-            hitBox = new Rectangle(pos.ToPoint(), size);
+            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
         }
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture)

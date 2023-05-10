@@ -10,9 +10,9 @@ namespace RPGame.Scipts
     {
         List<Scene> scenes = new List<Scene>();
 
-        public SceneHandler()
+        public SceneHandler(Rectangle windowSize)
         {
-            scenes.Add(new Scene1());
+            scenes.Add(new Scene1(windowSize));
         }
 
         public Scene GetCurrentScene()
