@@ -16,7 +16,7 @@ namespace RPGame.Scipts.Scenes
 
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
         {
 
         }

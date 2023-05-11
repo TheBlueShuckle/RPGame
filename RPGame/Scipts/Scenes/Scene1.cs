@@ -65,10 +65,10 @@ namespace RPGame.Scipts.Scenes
             player.Update(gameTime, impassableTiles);
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        public override void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
         {
             map.Draw(spriteBatch, texture);
-            player.Draw(spriteBatch, texture);
+            player.Draw(spriteBatch, texture, font);
         }
     }
 }

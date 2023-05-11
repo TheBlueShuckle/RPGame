@@ -12,6 +12,7 @@ namespace RPGame.Scipts
 
         Rectangle windowSize;
         Texture2D texture;
+        SpriteFont font;
 
         public Main()
         {
@@ -38,6 +39,8 @@ namespace RPGame.Scipts
 
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
+
+            font = Content.Load<SpriteFont>("Font/Font");
         }
 
         protected override void Update(GameTime gameTime)
@@ -62,7 +65,7 @@ namespace RPGame.Scipts
             
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            sceneHandler.GetCurrentScene().Draw(spriteBatch, texture);
+            sceneHandler.GetCurrentScene().Draw(spriteBatch, texture, font);
 
             spriteBatch.End();
 

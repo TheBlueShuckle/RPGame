@@ -10,6 +10,7 @@ namespace RPGame.Scipts
     {
         PlayerInputHandler inputHandler;
 
+        int tileSize;
         Vector2 pos, size;
         Rectangle hitBox;
 
@@ -17,6 +18,7 @@ namespace RPGame.Scipts
         {
             pos = new Vector2(0, 0);
             size = new Vector2(windowSize.Width / 128, (windowSize.Width / 96));
+            this.tileSize = tileSize;
             hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
             inputHandler = new PlayerInputHandler(tileSize * 3.3f);
         }
@@ -25,13 +27,14 @@ namespace RPGame.Scipts
         {
             inputHandler.Movement(gameTime, hitBox, impassableTiles);
 
-            pos += inputHandler.Velocity;
-            hitBox = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
+            pos = new Vector2((float)Math.Round(pos.X + inputHandler.Velocity.X, 0), (float)Math.Round(pos.Y + inputHandler.Velocity.Y, 0));
+            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
         }
 
-        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
         {
             spriteBatch.Draw(texture, hitBox, Color.Yellow);
+            spriteBatch.DrawString(font, "" + hitBox + " " + tileSize, new Vector2(0, 0), Color.White);
         }
     }
 }
