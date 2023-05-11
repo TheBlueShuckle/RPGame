@@ -2,24 +2,25 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RPGame.Scipts
 {
     internal class Map : Main
     {
-        int tileSize;
+        public int TileSize { get; set; }
         List<Tile> tiles = new List<Tile>();
         Vector2[,] tileGrid = new Vector2[64, 36];
 
         public Map(Rectangle windowSize)
         {
-            tileSize = windowSize.Width / 64;
+            TileSize = windowSize.Width / 64;
 
             for (int y = 0; y < tileGrid.GetLength(1); y++)
             {
                 for (int x = 0; x < tileGrid.GetLength(0); x++)
                 {
-                    tileGrid[x, y] = new Vector2(x * tileSize, y * tileSize);
+                    tileGrid[x, y] = new Vector2(x * TileSize, y * TileSize);
                 }
             }
         }
@@ -34,7 +35,7 @@ namespace RPGame.Scipts
 
                     if (number > 0)
                     {
-                        tiles.Add(new Tile(number, new Rectangle(y * tileSize, x * tileSize, tileSize, tileSize)));
+                        tiles.Add(new Tile(number, new Rectangle(y * TileSize, x * TileSize, TileSize, TileSize)));
                     }
                 }
             }
@@ -44,8 +45,8 @@ namespace RPGame.Scipts
         {
             foreach (Vector2 tilePos in tileGrid)
             {
-                spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(tileSize, tileSize)), Color.Black);
-                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(tileSize - 2, tileSize - 2)), Color.CornflowerBlue);
+                spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(TileSize, TileSize)), Color.Black);
+                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(TileSize - 2, TileSize - 2)), Color.CornflowerBlue);
             }
 
             foreach (Tile tile in tiles)
@@ -60,18 +61,56 @@ namespace RPGame.Scipts
 
             foreach (Tile tile in tiles)
             {
-                if (tile.GetPassability() == false)
+                List<Tile> neighboringTiles = GetNeighboringTiles(tile);
+
+                if (neighboringTiles.Count < 4)
                 {
-                    impassableTiles.Add(tile);
+                    if (tile.GetPassability() == false)
+                    {
+                        impassableTiles.Add(tile);
+                        //tile.SetColor();
+                    }
+                }
+
+                else
+                {
+                    int impassableNeighboringTiles = 0;
+
+                    foreach(Tile neighboringTile in neighboringTiles)
+                    {
+                        if (neighboringTile.GetPassability() == false)
+                        {
+                            impassableNeighboringTiles++;
+                        }
+                    }
+
+                    if (tile.GetPassability() == false && impassableNeighboringTiles < 4)
+                    {
+                        impassableTiles.Add(tile);
+                        //tile.SetColor();
+                    }
                 }
             }
 
             return impassableTiles;
         }
 
-        public int GetTileSize()
+        private List<Tile> GetNeighboringTiles(Tile tile)
         {
-            return tileSize;
+            List<Tile> neighboringTiles = new List<Tile>();
+
+            foreach(Tile neighboringTile in tiles)
+            {
+                if (neighboringTile.GetPosition() == tile.GetPosition() - new Vector2(TileSize, 0) ||
+                    neighboringTile.GetPosition() == tile.GetPosition() + new Vector2(TileSize, 0) ||
+                    neighboringTile.GetPosition() == tile.GetPosition() - new Vector2(0, TileSize) ||
+                    neighboringTile.GetPosition() == tile.GetPosition() + new Vector2(0, TileSize))
+                {
+                    neighboringTiles.Add(neighboringTile);
+                }
+            }
+
+            return neighboringTiles;
         }
     }
 }

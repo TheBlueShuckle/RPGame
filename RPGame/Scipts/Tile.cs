@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace RPGame.Scipts
 {
@@ -58,6 +59,16 @@ namespace RPGame.Scipts
         public Rectangle GetRectangle()
         {
             return rectangle;
+        }
+
+        public Vector2 GetPosition()
+        {
+            return new Vector2(rectangle.X, rectangle.Y);
+        }
+
+        public void SetColor()
+        {
+            color = Color.Red;
         }
     }
 }
