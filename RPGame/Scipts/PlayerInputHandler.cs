@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct3D11;
-using System;
 using System.Collections.Generic;
 
 namespace RPGame.Scipts
@@ -10,56 +8,63 @@ namespace RPGame.Scipts
     internal class PlayerInputHandler
     {
         float speed;
-        Vector2 playerPos;
+        Vector2 velocity;
 
-        public Vector2 PlayerPos
+        public Vector2 Velocity { get { return velocity; } }
+
+        public PlayerInputHandler(float speed)
         {
-            get { return playerPos; }
+            this.speed = speed;
         }
 
-        public float Speed
+        public void Movement(GameTime gameTime, Rectangle hitbox, List<Tile> impassableTiles)
         {
-            get { return speed; }
-            set { speed = value; }
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                velocity.Y = 0;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.W) && !CollidingUp(hitbox, impassableTiles))
+            {
+                velocity.Y = -(speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !CollidingDown(hitbox, impassableTiles))
+            {
+                velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            else
+            {
+                velocity.Y = 0;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D) && Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                velocity.X = 0;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.D) && !CollidingRight(hitbox, impassableTiles))
+            {
+                velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.A) && !CollidingLeft(hitbox, impassableTiles))
+            {
+                velocity.X = -(speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            else
+            {
+                velocity.X = 0;
+            }
         }
 
-        public PlayerInputHandler(Vector2 playerPos)
-        {
-            this.playerPos = playerPos;
-        }
-
-        public void Movement(double deltaTime, Rectangle hitBox, List<Tile> impassabeTiles)
-        {
-            //Move up doesnt work
-            if ((Keyboard.GetState().IsKeyDown(Keys.W) || Keyboard.GetState().IsKeyDown(Keys.Up)) && !CollidingDown(hitBox, impassabeTiles))
-            {
-                playerPos.Y -= (int) Math.Round(speed * (float)deltaTime, 0);
-            }
-
-            //Move down
-            if ((Keyboard.GetState().IsKeyDown(Keys.S) || Keyboard.GetState().IsKeyDown(Keys.Down)) && !CollidingUp(hitBox, impassabeTiles))
-            {
-                playerPos.Y += (int) Math.Round(speed * (float)deltaTime, 0);
-            }
-
-            //Move right
-            if ((Keyboard.GetState().IsKeyDown(Keys.D) || Keyboard.GetState().IsKeyDown(Keys.Right)) && !CollidingRight(hitBox, impassabeTiles))
-            {
-                playerPos.X += (int) Math.Round(speed * (float)deltaTime, 0);
-            }
-
-            //Move left doesnt work
-            if ((Keyboard.GetState().IsKeyDown(Keys.A) || Keyboard.GetState().IsKeyDown(Keys.Left)) && !CollidingLeft(hitBox, impassabeTiles))
-            {
-                playerPos.X -= (int) Math.Round(speed * (float)deltaTime);
-            }
-        }
-
-        private bool CollidingDown(Rectangle hitBox, List<Tile> impassabeTiles)
+        private bool CollidingUp(Rectangle hitbox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (RectangleHelper.TouchTop(hitBox, tile.GetRectangle()))
+                if (hitbox.TouchTop(tile.GetRectangle()))
                 {
                     return true;
                 }
@@ -68,11 +73,11 @@ namespace RPGame.Scipts
             return false;
         }
 
-        private bool CollidingUp(Rectangle hitBox, List<Tile> impassabeTiles)
+        private bool CollidingDown(Rectangle hitbox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (RectangleHelper.TouchBottom(hitBox, tile.GetRectangle()))
+                if (hitbox.TouchBottom(tile.GetRectangle()))
                 {
                     return true;
                 }
@@ -81,11 +86,11 @@ namespace RPGame.Scipts
             return false;
         }
 
-        private bool CollidingRight(Rectangle hitBox, List<Tile> impassabeTiles)
+        private bool CollidingRight(Rectangle hitbox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (RectangleHelper.TouchToRight(hitBox, tile.GetRectangle()))
+                if (hitbox.TouchToRight(tile.GetRectangle()))
                 {
                     return true;
                 }
@@ -94,11 +99,11 @@ namespace RPGame.Scipts
             return false;
         }
 
-        private bool CollidingLeft(Rectangle hitBox, List<Tile> impassabeTiles)
+        private bool CollidingLeft(Rectangle hitbox, List<Tile> impassabeTiles)
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (RectangleHelper.TouchToLeft(hitBox, tile.GetRectangle()))
+                if (hitbox.TouchToLeft(tile.GetRectangle()))
                 {
                     return true;
                 }
