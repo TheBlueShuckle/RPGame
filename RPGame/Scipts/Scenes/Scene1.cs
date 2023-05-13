@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RPGame.Scipts.Components;
+using RPGame.Scipts.Core;
+using SharpDX.Direct3D9;
 using System.Collections.Generic;
+using SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -8,16 +12,66 @@ namespace RPGame.Scipts.Scenes
     {
         Player player;
         Map map;
-        List<Tile> impassableTiles;
+        List<Tile> tiles, impassableTiles;
+        List<Component> components;
+
+        private Camera camera;
 
 
-        public Scene1(Rectangle windowSize) : base()
+        public Scene1() : base()
         {
-            map = new Map(windowSize);
-            player = new Player(windowSize, map.TileSize);
 
-            map.GenerateMap(new int[,]
+        }
+
+        public override void LoadContent(GraphicsDevice GraphicsDevice, Texture2D texture)
+        {
+            camera = new Camera();
+
+            map = new Map(texture);
+
+            GenerateMap();
+
+            tiles = map.GetTiles();
+            impassableTiles = map.GetImpassableTiles();
+
+            player = new Player(map.TileSize, impassableTiles, texture);
+
+            components = new List<Component>();
+
+            foreach (Tile tile in tiles)
             {
+                components.Add(tile);
+            }
+
+            components.Add(player);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            foreach(Component component in components)
+            {
+                component.Update(gameTime);
+            }
+
+            camera.Follow(player);
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
+
+            foreach (Component component in components)
+            {
+                component.Draw(gameTime, spriteBatch);
+            }
+
+            spriteBatch.End();
+        }
+
+        private void GenerateMap()
+        {
+            map.GenerateMap(new int[,]
+{
                 {2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
@@ -54,21 +108,8 @@ namespace RPGame.Scipts.Scenes
                 {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-            }
-            );
-
-            impassableTiles = map.GetImpassableTiles();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            player.Update(gameTime, impassableTiles);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
-        {
-            map.Draw(spriteBatch, texture);
-            player.Draw(spriteBatch, texture, font);
+}
+);
         }
     }
 }

@@ -1,18 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RPGame.Scipts.Components;
 using System.Collections.Generic;
 
-namespace RPGame.Scipts
+namespace RPGame.Scipts.Core
 {
-    internal class Map : Main
+    internal class Map
     {
         public int TileSize { get; set; }
+
         List<Tile> tiles = new List<Tile>();
         Vector2[,] tileGrid = new Vector2[64, 36];
+        Texture2D texture;
 
-        public Map(Rectangle windowSize)
+        public Map(Texture2D texture)
         {
-            TileSize = windowSize.Width / 64;
+            this.texture = texture;
+            TileSize = Main.ScreenWidth / 64;
 
             for (int y = 0; y < tileGrid.GetLength(1); y++)
             {
@@ -33,25 +37,13 @@ namespace RPGame.Scipts
 
                     if (number > 0)
                     {
-                        tiles.Add(new Tile(number, new Rectangle(y * TileSize, x * TileSize, TileSize, TileSize)));
+                        tiles.Add(new Tile(texture, number, new Rectangle(y * TileSize, x * TileSize, TileSize, TileSize)));
                     }
                 }
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
-        {
-            foreach (Vector2 tilePos in tileGrid)
-            {
-                spriteBatch.Draw(texture, new Rectangle(tilePos.ToPoint(), new Point(TileSize, TileSize)), Color.Black);
-                spriteBatch.Draw(texture, new Rectangle(new Point((int)tilePos.X + 1, (int)tilePos.Y + 1), new Point(TileSize - 2, TileSize - 2)), Color.CornflowerBlue);
-            }
-
-            foreach (Tile tile in tiles)
-            {
-                tile.Draw(spriteBatch, texture);
-            }
-        }
+        public List<Tile> GetTiles() { return tiles; }
 
         public List<Tile> GetImpassableTiles()
         {

@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using RPGame.Scipts.Components;
 using System;
 using System.Collections.Generic;
 
-namespace RPGame.Scipts
+namespace RPGame.Scipts.Handlers
 {
     internal class MovementHandler
     {

@@ -4,19 +4,21 @@ using Microsoft.Xna.Framework.Input;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
-namespace RPGame.Scipts
+namespace RPGame.Scipts.Components
 {
-    internal class Tile
+    internal class Tile : Component
     {
         const int PATH = 1, GRASS = 2, TREES = 3, WATER = 4;
 
         Rectangle rectangle;
+        Texture2D texture;
         Color color;
         bool passable;
 
-        public Tile(int material, Rectangle rectangle)
+        public Tile(Texture2D texture, int material, Rectangle rectangle)
         {
             this.rectangle = rectangle;
+            this.texture = texture;
             SetProperties(material);
         }
 
@@ -33,12 +35,12 @@ namespace RPGame.Scipts
                     color = Color.Green;
                     passable = true;
                     break;
-                
+
                 case TREES:
                     color = Color.DarkGreen;
                     passable = false;
                     break;
-                
+
                 case WATER:
                     color = Color.Blue;
                     passable = false;
@@ -46,7 +48,12 @@ namespace RPGame.Scipts
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        public override void Update(GameTime gameTime)
+        {
+
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, rectangle, color);
         }
