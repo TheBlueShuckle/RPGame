@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RPGame.Scipts
 {
@@ -63,32 +61,16 @@ namespace RPGame.Scipts
             {
                 List<Tile> neighboringTiles = GetNeighboringTiles(tile);
 
-                if (neighboringTiles.Count < 4)
+                if (tile.GetPassability() == false && neighboringTiles.Count < 4)
                 {
-                    if (tile.GetPassability() == false)
-                    {
-                        impassableTiles.Add(tile);
-                        //tile.SetColor();
-                    }
+                    impassableTiles.Add(tile);
+                    //tile.SetColor();
                 }
 
-                else
+                else if (tile.GetPassability() == false && AmountOfImpassableTiles(neighboringTiles) < 4)
                 {
-                    int impassableNeighboringTiles = 0;
-
-                    foreach(Tile neighboringTile in neighboringTiles)
-                    {
-                        if (neighboringTile.GetPassability() == false)
-                        {
-                            impassableNeighboringTiles++;
-                        }
-                    }
-
-                    if (tile.GetPassability() == false && impassableNeighboringTiles < 4)
-                    {
-                        impassableTiles.Add(tile);
-                        //tile.SetColor();
-                    }
+                    impassableTiles.Add(tile);
+                    //tile.SetColor();
                 }
             }
 
@@ -99,7 +81,7 @@ namespace RPGame.Scipts
         {
             List<Tile> neighboringTiles = new List<Tile>();
 
-            foreach(Tile neighboringTile in tiles)
+            foreach (Tile neighboringTile in tiles)
             {
                 if (neighboringTile.GetPosition() == tile.GetPosition() - new Vector2(TileSize, 0) ||
                     neighboringTile.GetPosition() == tile.GetPosition() + new Vector2(TileSize, 0) ||
@@ -111,6 +93,21 @@ namespace RPGame.Scipts
             }
 
             return neighboringTiles;
+        }
+
+        private int AmountOfImpassableTiles(List<Tile> neighboringTiles)
+        {
+            int impassableNeighboringTiles = 0;
+
+            foreach (Tile neighboringTile in neighboringTiles)
+            {
+                if (neighboringTile.GetPassability() == false)
+                {
+                    impassableNeighboringTiles++;
+                }
+            }
+
+            return impassableNeighboringTiles;
         }
     }
 }

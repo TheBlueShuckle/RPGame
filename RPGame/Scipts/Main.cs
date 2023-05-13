@@ -62,7 +62,6 @@ namespace RPGame.Scipts
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             sceneHandler.GetCurrentScene().Draw(spriteBatch, texture, font);

@@ -1,35 +1,43 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace RPGame.Scipts
 {
-    internal class PlayerInputHandler
+    internal class MovementHandler
     {
         float speed;
-        Vector2 velocity;
+        Vector2 size, velocity;
 
-        public Vector2 Velocity { get { return velocity; } }
+        public Vector2 Pos { get; set; }
 
-        public PlayerInputHandler(float speed)
+        public Rectangle Hitbox { get; set; }
+
+        public MovementHandler(float speed, Vector2 pos, Vector2 size)
         {
             this.speed = speed;
+            Pos = pos;
+            this.size = size;
         }
 
-        public void Movement(GameTime gameTime, Rectangle hitbox, List<Tile> impassableTiles)
+        public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.S))
+            Movement(gameTime, impassableTiles);
+
+            Pos = new Vector2((float)Math.Round(Pos.X + velocity.X, 0), (float)Math.Round(Pos.Y + velocity.Y, 0));
+            Hitbox = new Rectangle(Pos.ToPoint(), size.ToPoint());
+        }
+
+        private void Movement(GameTime gameTime, List<Tile> impassableTiles)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.S) && !CollidingUp(Hitbox, impassableTiles))
             {
-                velocity.Y = 0;
+                velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.W) && !CollidingUp(hitbox, impassableTiles))
-            {
-                velocity.Y = -(speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !CollidingDown(hitbox, impassableTiles))
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && !CollidingDown(Hitbox, impassableTiles))
             {
                 velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
@@ -39,19 +47,14 @@ namespace RPGame.Scipts
                 velocity.Y = 0;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D) && Keyboard.GetState().IsKeyDown(Keys.A))
+            if (Keyboard.GetState().IsKeyDown(Keys.A) && !Keyboard.GetState().IsKeyDown(Keys.D) && !CollidingLeft(Hitbox, impassableTiles))
             {
-                velocity.X = 0;
+                velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.D) && !CollidingRight(hitbox, impassableTiles))
+            else if (Keyboard.GetState().IsKeyDown(Keys.D) && !Keyboard.GetState().IsKeyDown(Keys.A) && !CollidingRight(Hitbox, impassableTiles))
             {
                 velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-            else if (Keyboard.GetState().IsKeyDown(Keys.A) && !CollidingLeft(hitbox, impassableTiles))
-            {
-                velocity.X = -(speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
             else

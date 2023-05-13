@@ -8,33 +8,25 @@ namespace RPGame.Scipts
 {
     internal class Player
     {
-        PlayerInputHandler inputHandler;
+        MovementHandler movementHandler;
 
         int tileSize;
-        Vector2 pos, size;
-        Rectangle hitBox;
 
         public Player(Rectangle windowSize, int tileSize)
         {
-            pos = new Vector2(0, 0);
-            size = new Vector2(windowSize.Width / 128, (windowSize.Width / 96));
             this.tileSize = tileSize;
-            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
-            inputHandler = new PlayerInputHandler(tileSize * 3.3f);
+            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(windowSize.Width / 128, (windowSize.Width / 96)));
         }
 
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
-            inputHandler.Movement(gameTime, hitBox, impassableTiles);
-
-            pos = new Vector2((float)Math.Round(pos.X + inputHandler.Velocity.X, 0), (float)Math.Round(pos.Y + inputHandler.Velocity.Y, 0));
-            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
+            movementHandler.Update(gameTime, impassableTiles);
         }
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
         {
-            spriteBatch.Draw(texture, hitBox, Color.Yellow);
-            spriteBatch.DrawString(font, "" + hitBox + " " + tileSize, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(texture, movementHandler.Hitbox, Color.Yellow);
+            spriteBatch.DrawString(font, "" + movementHandler.Hitbox + " " + tileSize, new Vector2(0, 0), Color.White);
         }
     }
 }
