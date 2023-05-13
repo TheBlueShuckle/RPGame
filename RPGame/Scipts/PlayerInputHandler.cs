@@ -7,43 +7,109 @@ namespace RPGame.Scipts
 {
     internal class PlayerInputHandler
     {
-        const float SPEED = 200;
+        float speed;
+        Vector2 velocity;
 
-        public Vector2 playerPos;
-        Rectangle hitBox;
+        public Vector2 Velocity { get { return velocity; } }
 
-        public Vector2 PlayerPos
+        public PlayerInputHandler(float speed)
         {
-            get { return playerPos; }
+            this.speed = speed;
         }
 
-        public PlayerInputHandler(Vector2 playerPos, Rectangle hitBox)
+        public void Movement(GameTime gameTime, Rectangle hitbox, List<Tile> impassableTiles)
         {
-            this.playerPos = playerPos;
-            this.hitBox = hitBox;
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                velocity.Y = 0;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.W) && !CollidingUp(hitbox, impassableTiles))
+            {
+                velocity.Y = -(speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !CollidingDown(hitbox, impassableTiles))
+            {
+                velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            else
+            {
+                velocity.Y = 0;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D) && Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                velocity.X = 0;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.D) && !CollidingRight(hitbox, impassableTiles))
+            {
+                velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.A) && !CollidingLeft(hitbox, impassableTiles))
+            {
+                velocity.X = -(speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            else
+            {
+                velocity.X = 0;
+            }
         }
 
-        public void Movement(double deltaTime, List<Tile> impassabeTiles)
+        private bool CollidingUp(Rectangle hitbox, List<Tile> impassabeTiles)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            foreach (Tile tile in impassabeTiles)
             {
-                playerPos.Y -= SPEED * (float)deltaTime;
+                if (hitbox.TouchTop(tile.GetRectangle()))
+                {
+                    return true;
+                }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            return false;
+        }
+
+        private bool CollidingDown(Rectangle hitbox, List<Tile> impassabeTiles)
+        {
+            foreach (Tile tile in impassabeTiles)
             {
-                playerPos.Y += SPEED * (float)deltaTime;
+                if (hitbox.TouchBottom(tile.GetRectangle()))
+                {
+                    return true;
+                }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            return false;
+        }
+
+        private bool CollidingRight(Rectangle hitbox, List<Tile> impassabeTiles)
+        {
+            foreach (Tile tile in impassabeTiles)
             {
-                playerPos.X += SPEED * (float)deltaTime;
+                if (hitbox.TouchToRight(tile.GetRectangle()))
+                {
+                    return true;
+                }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            return false;
+        }
+
+        private bool CollidingLeft(Rectangle hitbox, List<Tile> impassabeTiles)
+        {
+            foreach (Tile tile in impassabeTiles)
             {
-                playerPos.X -= SPEED * (float)deltaTime;
+                if (hitbox.TouchToLeft(tile.GetRectangle()))
+                {
+                    return true;
+                }
             }
+
+            return false;
         }
     }
 }

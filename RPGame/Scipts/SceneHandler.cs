@@ -8,19 +8,11 @@ namespace RPGame.Scipts
 {
     internal class SceneHandler
     {
-        SpriteBatch spriteBatch;
-        GraphicsDeviceManager graphics;
-        Texture2D texture;
-
         List<Scene> scenes = new List<Scene>();
 
-        public SceneHandler(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture)
+        public SceneHandler(Rectangle windowSize)
         {
-            this.spriteBatch = spriteBatch;
-            this.graphics = graphics;
-            this.texture = texture;
-
-            scenes.Add(new Scene1(spriteBatch, graphics, texture));
+            scenes.Add(new Scene1(windowSize));
         }
 
         public Scene GetCurrentScene()

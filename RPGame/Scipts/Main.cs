@@ -10,7 +10,9 @@ namespace RPGame.Scipts
         private SpriteBatch spriteBatch;
         SceneHandler sceneHandler;
 
+        Rectangle windowSize;
         Texture2D texture;
+        SpriteFont font;
 
         public Main()
         {
@@ -22,6 +24,13 @@ namespace RPGame.Scipts
         protected override void Initialize()
         {
             base.Initialize();
+            
+            graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+            graphics.IsFullScreen = true;
+            graphics.ApplyChanges();
+            
+            windowSize = Window.ClientBounds;
         }
 
         protected override void LoadContent()
@@ -31,13 +40,18 @@ namespace RPGame.Scipts
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
 
-            sceneHandler = new SceneHandler(spriteBatch, graphics, texture);
+            font = Content.Load<SpriteFont>("Font/Font");
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if(sceneHandler == null)
+            {
+                sceneHandler = new SceneHandler(windowSize);
+            }
 
             sceneHandler.GetCurrentScene().Update(gameTime);
 
@@ -49,9 +63,9 @@ namespace RPGame.Scipts
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            sceneHandler.GetCurrentScene().Draw();
+            sceneHandler.GetCurrentScene().Draw(spriteBatch, texture, font);
 
             spriteBatch.End();
 

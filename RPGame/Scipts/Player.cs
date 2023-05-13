@@ -1,47 +1,40 @@
-﻿using Microsoft.Win32.SafeHandles;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
-using Color = Microsoft.Xna.Framework.Color;
-using Point = Microsoft.Xna.Framework.Point;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace RPGame.Scipts
 {
-    internal class Player : Main
+    internal class Player
     {
-        SpriteBatch spriteBatch;
-        GraphicsDeviceManager graphicsDeviceManager;
         PlayerInputHandler inputHandler;
 
-        Vector2 pos;
-        Point size;
+        int tileSize;
+        Vector2 pos, size;
         Rectangle hitBox;
-        Texture2D texture;
 
-        public Player(SpriteBatch spriteBatch, GraphicsDeviceManager graphics, Texture2D texture)
+        public Player(Rectangle windowSize, int tileSize)
         {
-            this.spriteBatch = spriteBatch;
-            this.graphicsDeviceManager = graphics;
-            this.texture = texture;
-
-            pos = new Vector2(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2);
-            size = new Point(Window.ClientBounds.Width / 30, Window.ClientBounds.Width / 20);
-            inputHandler = new PlayerInputHandler(pos, hitBox);
+            pos = new Vector2(0, 0);
+            size = new Vector2(windowSize.Width / 128, (windowSize.Width / 96));
+            this.tileSize = tileSize;
+            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
+            inputHandler = new PlayerInputHandler(tileSize * 3.3f);
         }
 
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
-            inputHandler.Movement(gameTime.ElapsedGameTime.TotalSeconds, impassableTiles);
-            pos = inputHandler.PlayerPos;
-            hitBox = new Rectangle(pos.ToPoint(), size);
+            inputHandler.Movement(gameTime, hitBox, impassableTiles);
+
+            pos = new Vector2((float)Math.Round(pos.X + inputHandler.Velocity.X, 0), (float)Math.Round(pos.Y + inputHandler.Velocity.Y, 0));
+            hitBox = new Rectangle(pos.ToPoint(), size.ToPoint());
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
         {
-            spriteBatch.Draw(texture, hitBox, Color.Red);
+            spriteBatch.Draw(texture, hitBox, Color.Yellow);
+            spriteBatch.DrawString(font, "" + hitBox + " " + tileSize, new Vector2(0, 0), Color.White);
         }
     }
 }
