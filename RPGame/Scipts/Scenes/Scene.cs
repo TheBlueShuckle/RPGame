@@ -4,9 +4,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RPGame.Scipts.Scenes
 {
-    internal class Scene : Main
+    internal class Scene
     {
         public Scene()
+        {
+
+        }
+
+        public virtual void LoadContent(GraphicsDevice GraphicsDevice, Texture2D texture)
         {
 
         }
@@ -16,7 +21,7 @@ namespace RPGame.Scipts.Scenes
 
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Texture2D texture, SpriteFont font)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
         }

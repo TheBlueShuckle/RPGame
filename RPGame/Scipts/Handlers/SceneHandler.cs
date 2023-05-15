@@ -4,15 +4,17 @@ using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Scenes;
 using System.Collections.Generic;
 
-namespace RPGame.Scipts
+namespace RPGame.Scipts.Handlers
 {
     internal class SceneHandler
     {
         List<Scene> scenes = new List<Scene>();
 
-        public SceneHandler(Rectangle windowSize)
+        public List<Scene> GetScenes { get { return scenes; } }
+
+        public SceneHandler()
         {
-            scenes.Add(new Scene1(windowSize));
+            scenes.Add(new Scene1());
         }
 
         public Scene GetCurrentScene()

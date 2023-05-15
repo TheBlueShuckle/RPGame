@@ -1,6 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using RPGame.Scipts.Components;
+using RPGame.Scipts.Handlers;
+using RPGame.Scipts.Scenes;
+using System.CodeDom;
+using System.Collections.Generic;
 
 namespace RPGame.Scipts
 {
@@ -10,9 +15,13 @@ namespace RPGame.Scipts
         private SpriteBatch spriteBatch;
         SceneHandler sceneHandler;
 
+        public static int ScreenWidth;
+        public static int ScreenHeight;
+
         Rectangle windowSize;
         Texture2D texture;
         SpriteFont font;
+        Scene1 scene1;
 
         public Main()
         {
@@ -22,15 +31,13 @@ namespace RPGame.Scipts
         }
 
         protected override void Initialize()
-        {
-            base.Initialize();
-            
+        {            
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.ApplyChanges();
-            
-            windowSize = Window.ClientBounds;
+
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -41,17 +48,22 @@ namespace RPGame.Scipts
             texture.SetData(new Color[] { Color.White });
 
             font = Content.Load<SpriteFont>("Font/Font");
+
+            ScreenWidth = graphics.PreferredBackBufferWidth;
+            ScreenHeight = graphics.PreferredBackBufferHeight;
+
+            sceneHandler = new SceneHandler();
+
+            foreach (Scene1 scene in sceneHandler.GetScenes)
+            {
+                scene.LoadContent(GraphicsDevice, texture);
+            }
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            if(sceneHandler == null)
-            {
-                sceneHandler = new SceneHandler(windowSize);
-            }
 
             sceneHandler.GetCurrentScene().Update(gameTime);
 
@@ -62,12 +74,7 @@ namespace RPGame.Scipts
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-
-            sceneHandler.GetCurrentScene().Draw(spriteBatch, texture, font);
-
-            spriteBatch.End();
+            sceneHandler.GetCurrentScene().Draw(gameTime, spriteBatch);
 
             base.Draw(gameTime);
         }
