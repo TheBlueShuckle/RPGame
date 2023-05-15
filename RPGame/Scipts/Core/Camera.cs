@@ -29,8 +29,8 @@ namespace RPGame.Scipts.Core
         }
 
         //if target.pos < border.X + screenWidth / 2 OR target.pos > border.X - screenWidth / 2:
-        //  pos = Matrix.CreateTranslation(Main.ScreenWidth / 2, same, 0)
+        //  pos = Matrix.CreateTranslation(1, same, 0)
         //if target.pos < border.Y + ScreenHeight / 2 OR target.pos > border.Y - screenHeight / 2:
-        //  pos = Matrix.CreateTranslation(same, Matrix.ScreenWidth / 2, 0)
+        //  pos = Matrix.CreateTranslation(same, 1, 0)
     }
 }
