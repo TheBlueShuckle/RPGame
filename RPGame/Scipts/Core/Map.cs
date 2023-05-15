@@ -1,7 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic.Devices;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using Keyboard = Microsoft.Xna.Framework.Input.Keyboard;
+using Mouse = Microsoft.Xna.Framework.Input.Mouse;
 
 namespace RPGame.Scipts.Core
 {
@@ -10,7 +16,7 @@ namespace RPGame.Scipts.Core
         public int TileSize { get; set; }
 
         List<Tile> tiles = new List<Tile>();
-        Vector2[,] tileGrid = new Vector2[64, 36];
+        Vector2[,] tileGrid = new Vector2[128, 72];
         Texture2D texture;
 
         public Map(Texture2D texture)
@@ -38,6 +44,34 @@ namespace RPGame.Scipts.Core
                     if (number > 0)
                     {
                         tiles.Add(new Tile(texture, number, new Rectangle(y * TileSize, x * TileSize, TileSize, TileSize)));
+                    }
+                }
+            }
+        }
+
+        public void EditMap(Vector2 playerPos)
+        {
+            for (int x = 0; x < tileGrid.GetLength(0); x++)
+            {
+                for (int y = 0; y < tileGrid.GetLength(1); y++)
+                {
+                    if (playerPos.X > x * TileSize && playerPos.X < (x + 1) * TileSize && playerPos.Y > y * TileSize && playerPos.Y < (y + 1) * TileSize && Keyboard.GetState().GetPressedKeys().Count() != 0)
+                    {
+                        switch (Keyboard.GetState().GetPressedKeys()[0])
+                        {
+                            case Keys.V:
+                                tiles.Add(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                break;
+                            case Keys.B:
+                                tiles.Add(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                break;
+                            case Keys.N:
+                                tiles.Add(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                break;
+                            case Keys.M:
+                                tiles.Add(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                break;
+                        }
                     }
                 }
             }
@@ -100,6 +134,18 @@ namespace RPGame.Scipts.Core
             }
 
             return impassableNeighboringTiles;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            for (int x = 0; x < tileGrid.GetLength(0); x++)
+            {
+                for (int y = 0; y < tileGrid.GetLength(1); y++)
+                {
+                    spriteBatch.Draw(texture, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize), Color.Black);
+                    spriteBatch.Draw(texture, new Rectangle(x * TileSize + 1, y * TileSize + 1, TileSize - 2, TileSize - 2), Color.CornflowerBlue);
+                }
+            }
         }
     }
 }

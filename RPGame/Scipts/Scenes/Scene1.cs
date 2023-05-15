@@ -1,10 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic.Devices;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RPGame.Scipts.Components;
 using RPGame.Scipts.Core;
 using SharpDX.Direct3D9;
 using System.Collections.Generic;
 using SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState;
+using Mouse = Microsoft.Xna.Framework.Input.Mouse;
+using System.Threading.Tasks;
+using System.Linq;
+using SharpDX.XAudio2;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -26,7 +31,6 @@ namespace RPGame.Scipts.Scenes
         public override void LoadContent(GraphicsDevice GraphicsDevice, Texture2D texture)
         {
             camera = new Camera();
-
             map = new Map(texture);
 
             GenerateMap();
@@ -48,7 +52,13 @@ namespace RPGame.Scipts.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            foreach(Component component in components)
+            if (Main.EditMode)
+            {
+                map.EditMap(player.Pos);
+                AddNewTiles();
+            }
+
+            foreach (Component component in components)
             {
                 component.Update(gameTime);
             }
@@ -59,6 +69,8 @@ namespace RPGame.Scipts.Scenes
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
+
+            map.Draw(spriteBatch);
 
             foreach (Component component in components)
             {
@@ -71,7 +83,7 @@ namespace RPGame.Scipts.Scenes
         private void GenerateMap()
         {
             map.GenerateMap(new int[,]
-{
+            {
                 {2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
@@ -108,8 +120,39 @@ namespace RPGame.Scipts.Scenes
                 {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
                 {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
-}
-);
+            }
+            );
+        }
+
+        private void AddNewTiles()
+        {
+            foreach (Tile tile in map.GetTiles())
+            {
+                if (!components.Contains(tile))
+                {
+                    components.Add(tile);
+                    RemoveDuplicates(tile);
+                }
+
+                if (tile.GetPassability() == false && !impassableTiles.Contains(tile))
+                {
+                    impassableTiles.Add(tile);
+                }
+            }
+
+            components.Remove(player);
+            components.Insert(components.Count, player);
+        }
+
+        private void RemoveDuplicates(Tile tile)
+        {
+            foreach (Tile oldTile in tiles.ToList())
+            {
+                if (oldTile.GetPosition() == tile.GetPosition())
+                {
+                    tiles.Remove(oldTile);
+                }
+            }
         }
     }
 }
