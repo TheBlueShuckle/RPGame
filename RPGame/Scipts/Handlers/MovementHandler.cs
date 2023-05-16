@@ -11,10 +11,12 @@ namespace RPGame.Scipts.Handlers
 {
     internal class MovementHandler
     {
-        const float SPEED_MULTIPLIER = 5;
+        const float RUNNING_SPEED_MULTIPLIER = 5;
+        const bool OF = false;
 
         float speed;
         Vector2 size, velocity, pos;
+        Keys lastKey;
 
         public Vector2 Pos { get { return pos; } }
 
@@ -38,45 +40,33 @@ namespace RPGame.Scipts.Handlers
         {
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.S) && (!CollidingUp(Hitbox, impassableTiles) || Main.EditMode))
             {
+                lastKey = Keys.W;
                 velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.Y = SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.Y = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Main.EditMode == false)
+                if (Main.EditMode == OF)
                 {
-                    foreach (Tile tile in impassableTiles)
-                    {
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesBottomOf(tile.GetRectangle()))
-                        {
-                            pos.Y = tile.GetRectangle().Bottom;
-                            velocity.Y = 0;
-                        }
-                    }
+                    UpdateCollision(impassableTiles);
                 }
             }
 
             else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
             {
+                lastKey = Keys.S;
                 velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.Y = SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.Y = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Main.EditMode == false)
+                if (Main.EditMode == OF)
                 {
-                    foreach (Tile tile in impassableTiles)
-                    {
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesTopOf(tile.GetRectangle()))
-                        {
-                            pos.Y = tile.GetRectangle().Y - Hitbox.Height;
-                            velocity.Y = 0;
-                        }
-                    }
+                    UpdateCollision(impassableTiles);
                 }
             }
 
@@ -87,51 +77,80 @@ namespace RPGame.Scipts.Handlers
 
             if (Keyboard.GetState().IsKeyDown(Keys.A) && !Keyboard.GetState().IsKeyDown(Keys.D) && (!CollidingLeft(Hitbox, impassableTiles) || Main.EditMode))
             {
+                lastKey = Keys.A;
                 velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X = SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.X = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Main.EditMode == false)
+                if (Main.EditMode == OF)
                 {
-                    foreach (Tile tile in impassableTiles)
-                    {
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesRightOf(tile.GetRectangle()))
-                        {
-                            pos.X = tile.GetRectangle().Right;
-                            velocity.X = 0;
-                        }
-                    }
+                    UpdateCollision(impassableTiles);
                 }
             }
 
             else if (Keyboard.GetState().IsKeyDown(Keys.D) && !Keyboard.GetState().IsKeyDown(Keys.A) && (!CollidingRight(Hitbox, impassableTiles) || Main.EditMode))
             {
+                lastKey = Keys.D;
                 velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X = SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.X = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Main.EditMode == false)
+                if (Main.EditMode == OF)
                 {
-                    foreach (Tile tile in impassableTiles)
-                    {
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesLeftOf(tile.GetRectangle()))
-                        {
-                            pos.X = tile.GetRectangle().Left - Hitbox.Width;
-                            velocity.X = 0;
-                        }
-                    }
+                    UpdateCollision(impassableTiles);
                 }
             }
 
             else
             {
                 velocity.X = 0;
+            }
+        }
+
+        private void UpdateCollision(List<Tile> impassableTiles)
+        {
+            foreach (Tile tile in impassableTiles)
+            {
+                switch (lastKey)
+                {
+                    case Keys.W:
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesBottomOf(tile.GetRectangle()))
+                        {
+                            pos.Y = tile.GetRectangle().Bottom;
+                            velocity.Y = 0;
+                        }
+                        break;
+
+                    case Keys.S:
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesTopOf(tile.GetRectangle()))
+                        {
+                            pos.Y = tile.GetRectangle().Y - Hitbox.Height;
+                            velocity.Y = 0;
+                        }
+                        break;
+
+                    case Keys.A:
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesRightOf(tile.GetRectangle()))
+                        {
+                            pos.X = tile.GetRectangle().Right;
+                            velocity.X = 0;
+                        }
+                        break;
+
+                    case Keys.D:
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesLeftOf(tile.GetRectangle()))
+                        {
+                            pos.X = tile.GetRectangle().Left - Hitbox.Width;
+                            velocity.X = 0;
+                        }
+                        break;
+                }
             }
         }
 

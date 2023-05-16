@@ -126,17 +126,13 @@ namespace RPGame.Scipts.Scenes
 
         private void AddNewTiles()
         {
-            foreach (Tile tile in map.GetTiles())
+            foreach (Tile tile in map.GetTiles().ToList())
             {
                 if (!components.Contains(tile))
                 {
                     components.Add(tile);
                     RemoveDuplicates(tile);
-                }
-
-                if (tile.GetPassability() == false && !impassableTiles.Contains(tile))
-                {
-                    impassableTiles.Add(tile);
+                    map.SeeIfNewTileHasCollision(tile);
                 }
             }
 

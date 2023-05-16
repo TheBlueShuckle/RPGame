@@ -90,17 +90,34 @@ namespace RPGame.Scipts.Core
                 if (tile.GetPassability() == false && neighboringTiles.Count < 4)
                 {
                     impassableTiles.Add(tile);
-                    //tile.SetColor();
+                    tile.SetColor();
                 }
 
                 else if (tile.GetPassability() == false && AmountOfImpassableTiles(neighboringTiles) < 4)
                 {
                     impassableTiles.Add(tile);
-                    //tile.SetColor();
+                    tile.SetColor();
                 }
             }
 
             return impassableTiles;
+        }
+
+        public bool SeeIfNewTileHasCollision(Tile tile)
+        {
+            if (tile.GetPassability() == false && GetNeighboringTiles(tile).Count < 4)
+            {
+                tile.SetColor();
+                return true;
+            }
+
+            else if (tile.GetPassability() == false && AmountOfImpassableTiles(GetNeighboringTiles(tile)) < 4)
+            {
+                tile.SetColor();
+                return true;
+            }
+
+            return false;
         }
 
         private List<Tile> GetNeighboringTiles(Tile tile)
