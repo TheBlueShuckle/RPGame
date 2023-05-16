@@ -1,11 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using RPGame.Scipts.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RPGame.Scipts.Core
 {
@@ -28,7 +22,10 @@ namespace RPGame.Scipts.Core
                 -target.Pos.Y - target.Rectangle.Height / 2,
                 0);
 
-             StopCamera(target);
+            if (!Main.EditMode)
+            {
+                StopCamera(target);
+            }
 
             Matrix offset = Matrix.CreateTranslation(
                     Main.ScreenWidth / 2,

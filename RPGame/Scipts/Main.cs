@@ -72,14 +72,7 @@ namespace RPGame.Scipts
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            ks1 = Keyboard.GetState();
-
-            if (ks1.IsKeyDown(Keys.Space) && ks2.IsKeyUp(Keys.Space))
-            {
-                EditMode = EditMode ? false : true;
-            }
-
-            ks2 = ks1;
+            ToggleEditMode();
 
             sceneHandler.GetCurrentScene().Update(gameTime);
 
@@ -96,13 +89,30 @@ namespace RPGame.Scipts
 
             if (EditMode)
             {
-                spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 1, (ScreenHeight / 2) - 10, 2, 20), Color.Black);
-                spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 10, (ScreenHeight / 2) - 1, 20, 2), Color.Black);
+                DrawCrosshair();
             }
 
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void ToggleEditMode()
+        {
+            ks1 = Keyboard.GetState();
+
+            if (ks1.IsKeyDown(Keys.Space) && ks2.IsKeyUp(Keys.Space))
+            {
+                EditMode = EditMode ? false : true;
+            }
+
+            ks2 = ks1;
+        }
+
+        private void DrawCrosshair()
+        {
+            spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 2, (ScreenHeight / 2) - 10, 4, 20), Color.Black);
+            spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 10, (ScreenHeight / 2) - 2, 20, 4), Color.Black);
         }
     }
 }
