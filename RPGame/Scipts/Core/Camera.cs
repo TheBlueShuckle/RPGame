@@ -12,8 +12,14 @@ namespace RPGame.Scipts.Core
     internal class Camera
     {
         Matrix pos;
+        Rectangle border;
 
         public Matrix Transform { get; private set; }
+
+        public Camera(Rectangle border)
+        {
+            this.border = border;
+        }
 
         public void Follow(Player target)
         {
@@ -22,7 +28,7 @@ namespace RPGame.Scipts.Core
                 -target.Pos.Y - target.Rectangle.Height / 2,
                 0);
 
-             StopCamera(target, new Rectangle(new Point(0, 0), new Point(5120, 2880)));
+             StopCamera(target);
 
             Matrix offset = Matrix.CreateTranslation(
                     Main.ScreenWidth / 2,
@@ -32,7 +38,7 @@ namespace RPGame.Scipts.Core
             Transform = pos * offset;
         }
 
-        public void StopCamera(Player target, Rectangle border)
+        public void StopCamera(Player target)
         {
             float x, y;
 
@@ -61,10 +67,5 @@ namespace RPGame.Scipts.Core
 
             pos = Matrix.CreateTranslation(x, y, 0);
         }
-
-        //if target.pos < border.X + screenWidth / 2 OR target.pos > border.X - screenWidth / 2:
-        //  pos = Matrix.CreateTranslation(1, same, 0)
-        //if target.pos < border.Y + ScreenHeight / 2 OR target.pos > border.Y - screenHeight / 2:
-        //  pos = Matrix.CreateTranslation(same, 1, 0)
     }
 }
