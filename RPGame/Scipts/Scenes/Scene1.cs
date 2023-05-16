@@ -31,7 +31,7 @@ namespace RPGame.Scipts.Scenes
         public override void LoadContent(GraphicsDevice GraphicsDevice, Texture2D texture)
         {
             camera = new Camera();
-            map = new Map(texture);
+            map = new Map(texture, new int[] { 128, 72 });
 
             GenerateMap();
 

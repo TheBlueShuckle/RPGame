@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using Keyboard = Microsoft.Xna.Framework.Input.Keyboard;
 using Mouse = Microsoft.Xna.Framework.Input.Mouse;
@@ -16,12 +17,14 @@ namespace RPGame.Scipts.Core
         public int TileSize { get; set; }
 
         List<Tile> tiles = new List<Tile>();
-        Vector2[,] tileGrid = new Vector2[128, 72];
+        Vector2[,] tileGrid;
         Texture2D texture;
 
-        public Map(Texture2D texture)
+        public Map(Texture2D texture, int[] tileGridSize)
         {
             this.texture = texture;
+            tileGrid = new Vector2[tileGridSize[0], tileGridSize[1]];
+
             TileSize = Main.ScreenWidth / 64;
 
             for (int y = 0; y < tileGrid.GetLength(1); y++)

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
 using RPGame.Scipts.Handlers;
 using RPGame.Scipts.Scenes;
+using SharpDX.Direct2D1.Effects;
 using SharpDX.MediaFoundation;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace RPGame.Scipts
 
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
             base.Initialize();
