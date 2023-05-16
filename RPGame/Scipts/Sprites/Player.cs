@@ -29,7 +29,7 @@ namespace RPGame.Scipts.Components
             Rectangle = movementHandler.Hitbox;
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             movementHandler.Update(gameTime, impassableTiles);
 
@@ -37,7 +37,7 @@ namespace RPGame.Scipts.Components
             Rectangle = movementHandler.Hitbox;
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, Rectangle, Color.Yellow);
         }
