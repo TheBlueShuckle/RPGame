@@ -11,14 +11,24 @@ namespace RPGame.Scipts.Core
 {
     internal class Camera
     {
+        Matrix pos;
+        Rectangle border;
+
         public Matrix Transform { get; private set; }
+
+        public Camera(Rectangle border)
+        {
+            this.border = border;
+        }
 
         public void Follow(Player target)
         {
-            Matrix pos = Matrix.CreateTranslation(
+            pos = Matrix.CreateTranslation(
                 -target.Pos.X - target.Rectangle.Width / 2,
                 -target.Pos.Y - target.Rectangle.Height / 2,
                 0);
+
+             StopCamera(target);
 
             Matrix offset = Matrix.CreateTranslation(
                     Main.ScreenWidth / 2,
@@ -28,9 +38,34 @@ namespace RPGame.Scipts.Core
             Transform = pos * offset;
         }
 
-        //if target.pos < border.X + screenWidth / 2 OR target.pos > border.X - screenWidth / 2:
-        //  pos = Matrix.CreateTranslation(Main.ScreenWidth / 2, same, 0)
-        //if target.pos < border.Y + ScreenHeight / 2 OR target.pos > border.Y - screenHeight / 2:
-        //  pos = Matrix.CreateTranslation(same, Matrix.ScreenWidth / 2, 0)
+        public void StopCamera(Player target)
+        {
+            float x, y;
+
+            x = -target.Pos.X - target.Rectangle.Width / 2;
+            y = -target.Pos.Y - target.Rectangle.Height / 2;
+
+            if (target.Pos.X < border.X + (Main.ScreenWidth / 2))
+            {
+                x = -Main.ScreenWidth / 2;
+            }
+
+            if (target.Pos.X > border.Right - (Main.ScreenWidth / 2))
+            {
+                x = -border.Right + Main.ScreenWidth / 2;
+            }
+
+            if (target.Pos.Y < border.Y + (Main.ScreenHeight / 2))
+            {
+                y = -Main.ScreenHeight / 2;
+            }
+
+            if (target.Pos.Y > border.Bottom - (Main.ScreenHeight / 2))
+            {
+                y = -border.Bottom + Main.ScreenHeight / 2;
+            }
+
+            pos = Matrix.CreateTranslation(x, y, 0);
+        }
     }
 }
