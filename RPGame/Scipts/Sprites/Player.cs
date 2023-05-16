@@ -41,5 +41,10 @@ namespace RPGame.Scipts.Components
         {
             spriteBatch.Draw(texture, Rectangle, Color.Yellow);
         }
+
+        public Point GetCenter()
+        {
+            return new Point((int)(Pos.X + Rectangle.Width / 2), (int)(Pos.Y + Rectangle.Height / 2));
+        }
     }
 }

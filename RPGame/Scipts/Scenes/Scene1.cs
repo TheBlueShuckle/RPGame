@@ -54,7 +54,7 @@ namespace RPGame.Scipts.Scenes
         {
             if (Main.EditMode)
             {
-                map.EditMap(player.Pos);
+                map.EditMap(player.GetCenter());
                 AddNewTiles();
             }
 
