@@ -23,6 +23,7 @@ namespace RPGame.Scipts.Scenes
         List<Enemy> enemies = new List<Enemy>();
         List<Component> components;
 
+        KeyboardState ks1, ks2;
         Texture2D texture;
 
         private Camera camera;
@@ -39,15 +40,15 @@ namespace RPGame.Scipts.Scenes
 
             map = new Map(texture, new int[] { 128, 72 });
             camera = new Camera(new Rectangle(new Point(0, 0), new Point(128 * map.TileSize, 72 * map.TileSize)));
+            mapSaver = new MapSaver();
+
+            map.GenerateMap(mapSaver.LoadMap(FILE_NAME));
 
             tiles = map.GetTiles();
             impassableTiles = map.GetImpassableTiles();
 
             player = new Player(map.TileSize, impassableTiles, texture);
             components = new List<Component>();
-            mapSaver = new MapSaver(tiles);
-
-            map.GenerateMap(mapSaver.LoadMap(FILE_NAME));
 
             foreach (Tile tile in tiles)
             {
@@ -75,10 +76,14 @@ namespace RPGame.Scipts.Scenes
                 component.Update(gameTime);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftControl) && Keyboard.GetState().IsKeyDown(Keys.S))
+            ks1 = Keyboard.GetState();
+
+            if (ks1.IsKeyDown(Keys.F1) && ks2.IsKeyUp(Keys.F1))
             {
-                mapSaver.SaveMap(FILE_NAME);
+                mapSaver.SaveMap(FILE_NAME, map.GetTiles());
             }
+
+            ks2 = ks1;
 
             camera.Follow(player);
         }
@@ -123,7 +128,7 @@ namespace RPGame.Scipts.Scenes
         {
             foreach (Tile oldTile in tiles.ToList())
             {
-                if (oldTile.GetPosition() == tile.GetPosition())
+                if (oldTile.GetPosition() == tile.GetPosition() && oldTile != tile)
                 {
                     tiles.Remove(oldTile);
                 }

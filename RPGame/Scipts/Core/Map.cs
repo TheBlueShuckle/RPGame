@@ -38,7 +38,7 @@ namespace RPGame.Scipts.Core
 
         public void GenerateMap(List<int> savedTiles)
         {
-            for (int y = 0; y < 36; y++)
+            for (int y = 0; y < 37; y++)
             {
                 for (int x = 0; x < 64; x++)
                 {

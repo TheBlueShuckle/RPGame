@@ -54,7 +54,7 @@ namespace RPGame.Scipts.Handlers
                 }
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.LeftControl) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.S;
                 velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;

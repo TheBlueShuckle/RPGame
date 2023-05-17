@@ -11,12 +11,12 @@ namespace RPGame.Scipts.Editing
         StreamWriter writer;
         StreamReader reader;
 
-        public MapSaver(List<Tile> tiles)
+        public MapSaver()
         {
-            this.tiles = tiles;
+
         }
 
-        public void SaveMap(string fileName)
+        public void SaveMap(string fileName, List<Tile> tiles)
         {
             writer = new StreamWriter("C:\\Users\\ville\\source\\repos\\RPGame\\RPGame\\TileMaps\\" + fileName);
 
