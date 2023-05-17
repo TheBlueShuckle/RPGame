@@ -22,9 +22,7 @@ namespace RPGame.Scipts
         public static SpriteFont Font { get; set; }
         public static bool EditMode { get; set; }
 
-        Rectangle windowSize;
         Texture2D texture;
-        Scene1 scene1;
 
         KeyboardState ks1, ks2;
 

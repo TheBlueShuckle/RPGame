@@ -10,12 +10,14 @@ using Mouse = Microsoft.Xna.Framework.Input.Mouse;
 using System.Threading.Tasks;
 using System.Linq;
 using SharpDX.XAudio2;
+using RPGame.Scipts.Sprites.Enemies;
 
 namespace RPGame.Scipts.Scenes
 {
     internal class Scene1 : Scene
     {
         Player player;
+        List<Slime> slimes = new List<Slime>();
         Map map;
         List<Tile> tiles, impassableTiles;
         List<Component> components;
@@ -40,11 +42,18 @@ namespace RPGame.Scipts.Scenes
 
             player = new Player(map.TileSize, impassableTiles, texture);
 
+            slimes.Add(new Slime(new Vector2(30, 30), texture));
+
             components = new List<Component>();
 
             foreach (Tile tile in tiles)
             {
                 components.Add(tile);
+            }
+
+            foreach (Slime slime in slimes)
+            {
+                components.Add(slime);
             }
 
             components.Add(player);
