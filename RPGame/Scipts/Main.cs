@@ -47,10 +47,10 @@ namespace RPGame.Scipts
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
+
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Font = Content.Load<SpriteFont>("Font/Font");
 
@@ -61,7 +61,7 @@ namespace RPGame.Scipts
 
             foreach (Scene1 scene in sceneHandler.GetScenes)
             {
-                scene.LoadContent(GraphicsDevice, texture);
+                scene.LoadContent(GraphicsDevice);
             }
         }
 

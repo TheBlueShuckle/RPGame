@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RPGame.Scipts
 {
-    public interface Component
+    public abstract class Component
     {
-        void Update(GameTime gameTime);
+        public abstract void Update(GameTime gameTime);
 
-        void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }
 }
