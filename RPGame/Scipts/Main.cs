@@ -59,7 +59,7 @@ namespace RPGame.Scipts
 
             foreach (Scene1 scene in sceneHandler.GetScenes)
             {
-                scene.LoadContent(GraphicsDevice);
+                scene.LoadContent(GraphicsDevice, Content);
             }
         }
 

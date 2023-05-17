@@ -98,13 +98,13 @@ namespace RPGame.Scipts.Core
                 if (tile.GetPassability() == false && neighboringTiles.Count < 4)
                 {
                     impassableTiles.Add(tile);
-                    tile.SetColor();
+                    //tile.SetColor();
                 }
 
                 else if (tile.GetPassability() == false && AmountOfImpassableTiles(neighboringTiles) < 4)
                 {
                     impassableTiles.Add(tile);
-                    tile.SetColor();
+                    //tile.SetColor();
                 }
             }
 

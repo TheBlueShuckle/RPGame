@@ -8,6 +8,8 @@ using SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState;
 using System.Linq;
 using RPGame.Scipts.Sprites.Enemies;
 using RPGame.Scipts.Editing;
+using Microsoft.Xna.Framework.Content;
+using System;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -25,6 +27,7 @@ namespace RPGame.Scipts.Scenes
 
         KeyboardState ks1, ks2;
         Texture2D texture;
+        SpriteFont font;
 
         private Camera camera;
 
@@ -34,9 +37,9 @@ namespace RPGame.Scipts.Scenes
 
         }
 
-        public override void LoadContent(GraphicsDevice GraphicsDevice)
+        public override void LoadContent(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
-            LoadTextures(GraphicsDevice);
+            LoadTextures(GraphicsDevice, Content);
 
             map = new Map(texture, new int[] { 128, 72 });
             camera = new Camera(new Rectangle(new Point(0, 0), new Point(128 * map.TileSize, 72 * map.TileSize)));
@@ -100,12 +103,20 @@ namespace RPGame.Scipts.Scenes
             }
 
             spriteBatch.End();
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(font, ("" + (Mouse.GetState().Position.X - (player.Pos.X - Main.ScreenWidth / 2)) + ", " + (player.Pos.Y + Main.ScreenHeight / 2 - Mouse.GetState().Position.Y)), Vector2.Zero, Color.Black);
+
+            spriteBatch.End();
         }
 
-        protected override void LoadTextures(GraphicsDevice GraphicsDevice)
+        protected override void LoadTextures(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
+
+            font = Content.Load<SpriteFont>("Font/Font");
         }
 
         private void AddNewTiles()
