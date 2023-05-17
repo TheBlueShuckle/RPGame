@@ -36,17 +36,22 @@ namespace RPGame.Scipts.Core
             }
         }
 
-        public void GenerateMap(int[,] map)
+        public void GenerateMap(List<int> savedTiles)
         {
-            for (int x = 0; x < map.GetLength(0); x++)
+            for (int y = 0; y < 36; y++)
             {
-                for (int y = 0; y < map.GetLength(1); y++)
+                for (int x = 0; x < 64; x++)
                 {
-                    int number = map[x, y];
-
-                    if (number > 0)
+                    if (savedTiles.Count > 0)
                     {
-                        tiles.Add(new Tile(texture, number, new Rectangle(y * TileSize, x * TileSize, TileSize, TileSize)));
+                        int number = savedTiles.ElementAt(0);
+
+                        if (number > 0)
+                        {
+                            tiles.Add(new Tile(texture, number, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        }
+
+                        savedTiles.RemoveAt(0);
                     }
                 }
             }

@@ -15,10 +15,13 @@ namespace RPGame.Scipts.Components
         Color color;
         bool passable;
 
+        public int Material { get; private set; }
+
         public Tile(Texture2D texture, int material, Rectangle rectangle)
         {
             this.rectangle = rectangle;
             this.texture = texture;
+            Material = material;
             SetProperties(material);
         }
 
