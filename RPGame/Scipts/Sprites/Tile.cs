@@ -10,17 +10,21 @@ namespace RPGame.Scipts.Components
     {
         const int PATH = 1, GRASS = 2, TREES = 3, WATER = 4;
 
-        Rectangle rectangle;
         Texture2D texture;
         Color color;
         bool passable;
+
+        public override Rectangle Rectangle { get; set; }
+
+        public override Vector2 Position { get; set; }
 
         public int Material { get; private set; }
 
         public Tile(Texture2D texture, int material, Rectangle rectangle)
         {
-            this.rectangle = rectangle;
+            Rectangle = rectangle;
             this.texture = texture;
+            Position = new Vector2(rectangle.X, rectangle.Y);
             Material = material;
             SetProperties(material);
         }
@@ -58,22 +62,12 @@ namespace RPGame.Scipts.Components
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, rectangle, color);
+            spriteBatch.Draw(texture, Rectangle, color);
         }
 
         public bool GetPassability()
         {
             return passable;
-        }
-
-        public Rectangle GetRectangle()
-        {
-            return rectangle;
-        }
-
-        public Vector2 GetPosition()
-        {
-            return new Vector2(rectangle.X, rectangle.Y);
         }
 
         public void SetColor()

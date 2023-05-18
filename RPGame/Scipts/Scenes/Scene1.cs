@@ -42,10 +42,10 @@ namespace RPGame.Scipts.Scenes
             LoadTextures(GraphicsDevice, Content);
 
             map = new Map(texture, new int[] { 128, 72 });
-            camera = new Camera(new Rectangle(new Point(0, 0), new Point(128 * map.TileSize, 72 * map.TileSize)));
             mapSaver = new MapSaver();
-
             map.GenerateMap(mapSaver.LoadMap(FILE_NAME));
+
+            camera = new Camera(map.MapSize);
 
             tiles = map.GetTiles();
             impassableTiles = map.GetImpassableTiles();
@@ -75,9 +75,13 @@ namespace RPGame.Scipts.Scenes
 
             if (Main.EditMode)
             {
-                map.EditMap(player.Pos, lastPressedKey);
-                AddNewTiles();
-                //RemoveDeletedTiles();
+                map.EditMap(player.Position, lastPressedKey);
+
+                if (tiles.Count != map.GetTiles().Count)
+                {
+                    AddNewTiles();
+                    //RemoveDeletedTiles();
+                }
             }
 
             foreach (Component component in components)
@@ -105,14 +109,58 @@ namespace RPGame.Scipts.Scenes
 
             foreach (Component component in components)
             {
-                component.Draw(gameTime, spriteBatch);
+                if (
+                    component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) && 
+                    component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2) && 
+                    component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) && 
+                    component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                {
+                    component.Draw(gameTime, spriteBatch);
+                }
+                
+                else if (
+                    player.Position.X < Main.ScreenHeight / 2 &&
+                    component.Rectangle.Right <= Main.ScreenWidth &&
+                    component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
+                    component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                {
+                    component.Draw(gameTime, spriteBatch);
+                }
+
+                else if (
+                    player.Position.X >= map.MapSize.Right - Main.ScreenWidth / 2 &&
+                    component.Rectangle.Right >= player.Position.X - Main.ScreenWidth &&
+                    component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
+                    component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                {
+                    component.Draw(gameTime, spriteBatch);
+                }
+
+                else if (
+                    player.Position.Y <= Main.ScreenHeight / 2 &&
+                    component.Rectangle.Bottom <= Main.ScreenHeight && 
+                    component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
+                    component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2))
+                {
+                    component.Draw(gameTime, spriteBatch);
+                }
+
+                else if (
+                    player.Position.Y >= map.MapSize.Bottom - Main.ScreenHeight / 2 &&
+                    component.Rectangle.Right >= player.Position.Y - Main.ScreenHeight &&
+                    component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
+                    component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2))
+                {
+                    component.Draw(gameTime, spriteBatch);
+                }
+                
             }
 
             spriteBatch.End();
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, ("" + (Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - player.Pos.X - 10) + ", " + (Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - player.Pos.Y -25 )))), Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + player.Position, Vector2.Zero, Color.Black);
 
             spriteBatch.End();
         }
@@ -157,7 +205,7 @@ namespace RPGame.Scipts.Scenes
         {
             foreach (Tile oldTile in tiles.ToList())
             {
-                if (oldTile.GetPosition() == tile.GetPosition() && oldTile != tile)
+                if (oldTile.Position == tile.Position && oldTile != tile)
                 {
                     tiles.Remove(oldTile);
                 }

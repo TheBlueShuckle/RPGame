@@ -11,18 +11,21 @@ namespace RPGame.Scipts.Sprites.Enemies
     internal class Slime : Enemy
     {
         Vector2 pos, velocity = Vector2.Zero;
-        Rectangle hitbox;
         Texture2D texture;
 
         public override float HP { get; set; }
 
         public override float Damage { get; set; }
 
+        public override Vector2 Position { get; set; }
+
+        public override Rectangle Rectangle { get; set; }
+
         public Slime(Vector2 pos, Texture2D texture)
         {
             this.pos = pos;
             this.texture = texture;
-            hitbox = new Rectangle(pos.ToPoint(), new Point(30, 30));
+            Rectangle = new Rectangle(pos.ToPoint(), new Point(30, 30));
         }
 
         public override void Update(GameTime gameTime)
@@ -39,17 +42,17 @@ namespace RPGame.Scipts.Sprites.Enemies
 
             pos += velocity;
 
-            hitbox = new Rectangle(pos.ToPoint(), new Point(30, 30));
+            Rectangle = new Rectangle(pos.ToPoint(), new Point(30, 30));
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, hitbox, Color.LightBlue);
+            spriteBatch.Draw(texture, Rectangle, Color.LightBlue);
         }
 
         private Vector2 GetCenter()
         {
-            return new Vector2(hitbox.X + (hitbox.Width / 2), hitbox.Y + (hitbox.Height/ 2));
+            return new Vector2(Rectangle.X + (Rectangle.Width / 2), Rectangle.Y + (Rectangle.Height/ 2));
         }
     }
 }

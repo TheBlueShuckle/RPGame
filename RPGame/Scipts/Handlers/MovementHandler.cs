@@ -120,33 +120,33 @@ namespace RPGame.Scipts.Handlers
                 switch (lastKey)
                 {
                     case Keys.W:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesBottomOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesBottomOf(tile.Rectangle))
                         {
-                            pos.Y = tile.GetRectangle().Bottom;
+                            pos.Y = tile.Rectangle.Bottom;
                             velocity.Y = 0;
                         }
                         break;
 
                     case Keys.S:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesTopOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesTopOf(tile.Rectangle))
                         {
-                            pos.Y = tile.GetRectangle().Y - Hitbox.Height;
+                            pos.Y = tile.Rectangle.Y - Hitbox.Height;
                             velocity.Y = 0;
                         }
                         break;
 
                     case Keys.A:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesRightOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesRightOf(tile.Rectangle))
                         {
-                            pos.X = tile.GetRectangle().Right;
+                            pos.X = tile.Rectangle.Right;
                             velocity.X = 0;
                         }
                         break;
 
                     case Keys.D:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesLeftOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesLeftOf(tile.Rectangle))
                         {
-                            pos.X = tile.GetRectangle().Left - Hitbox.Width;
+                            pos.X = tile.Rectangle.Left - Hitbox.Width;
                             velocity.X = 0;
                         }
                         break;
@@ -158,7 +158,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesBottomOf(tile.GetRectangle()))
+                if (hitbox.TouchesBottomOf(tile.Rectangle))
                 {
                     return true;
                 }
@@ -171,7 +171,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesTopOf(tile.GetRectangle()))
+                if (hitbox.TouchesTopOf(tile.Rectangle))
                 {
                     return true;
                 }
@@ -184,7 +184,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesLeftOf(tile.GetRectangle()))
+                if (hitbox.TouchesLeftOf(tile.Rectangle))
                 {
                     return true;
                 }
@@ -197,7 +197,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesRightOf(tile.GetRectangle()))
+                if (hitbox.TouchesRightOf(tile.Rectangle))
                 {
                     return true;
                 }

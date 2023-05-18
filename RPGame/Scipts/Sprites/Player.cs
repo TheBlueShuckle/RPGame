@@ -14,9 +14,9 @@ namespace RPGame.Scipts.Components
         Texture2D texture;
         List<Tile> impassableTiles;
 
-        public Vector2 Pos { get; private set; }
+        public override Vector2 Position { get; set; }
 
-        public Rectangle Rectangle { get; private set; }
+        public override Rectangle Rectangle { get; set; }
 
         public Player(int tileSize, List<Tile> impassableTiles, Texture2D texture)
         {
@@ -25,7 +25,7 @@ namespace RPGame.Scipts.Components
 
             movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(Main.ScreenWidth / 128, Main.ScreenWidth / 96));
 
-            Pos = movementHandler.Pos;
+            Position = movementHandler.Pos;
             Rectangle = movementHandler.Hitbox;
         }
 
@@ -33,7 +33,7 @@ namespace RPGame.Scipts.Components
         {
             movementHandler.Update(gameTime, impassableTiles);
 
-            Pos = movementHandler.Pos;
+            Position = movementHandler.Pos;
             Rectangle = movementHandler.Hitbox;
         }
 
@@ -44,7 +44,7 @@ namespace RPGame.Scipts.Components
 
         public Point GetCenter()
         {
-            return new Point((int)(Pos.X + Rectangle.Width / 2), (int)(Pos.Y + Rectangle.Height / 2));
+            return new Point((int)(Position.X + Rectangle.Width / 2), (int)(Position.Y + Rectangle.Height / 2));
         }
     }
 }
