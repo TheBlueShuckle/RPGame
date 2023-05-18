@@ -18,7 +18,9 @@ namespace RPGame.Scipts.Editing
 
         public void SaveMap(string fileName, List<Tile> tiles)
         {
-            writer = new StreamWriter("C:\\Users\\ville\\source\\repos\\RPGame\\RPGame\\TileMaps\\" + fileName);
+            FileStream overwriteFile = File.Open("C:\\Users\\ville\\source\\repos\\RPGame\\RPGame\\TileMaps\\" + fileName, FileMode.Create);
+
+            writer = new StreamWriter(overwriteFile);
 
             foreach(Tile tile in tiles)
             {

@@ -38,7 +38,7 @@ namespace RPGame.Scipts.Core
 
         public void GenerateMap(List<int> savedTiles)
         {
-            for (int y = 0; y < 37; y++)
+            for (int y = 0; y < 39; y++)
             {
                 for (int x = 0; x < 64; x++)
                 {
@@ -57,15 +57,20 @@ namespace RPGame.Scipts.Core
             }
         }
 
-        public void EditMap(Vector2 playerPos)
+        public void EditMap(Vector2 playerPos, Keys lastPressedKey)
         {
             for (int x = 0; x < tileGrid.GetLength(0); x++)
             {
                 for (int y = 0; y < tileGrid.GetLength(1); y++)
                 {
-                    if (Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) > x * TileSize && Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) < (x + 1) * TileSize && Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) > y * TileSize && Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) < (y + 1) * TileSize && Keyboard.GetState().GetPressedKeys().Count() != 0)
+                    if (
+                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) > x * TileSize && 
+                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) < (x + 1) * TileSize && 
+                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) > y * TileSize && 
+                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) < (y + 1) * TileSize && 
+                        Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        switch (Keyboard.GetState().GetPressedKeys()[0])
+                        switch (lastPressedKey)
                         {
                             case Keys.V:
                                 tiles.Add(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
@@ -79,6 +84,22 @@ namespace RPGame.Scipts.Core
                             case Keys.M:
                                 tiles.Add(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                                 break;
+                        }
+                    }
+
+                    else if (
+                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) > x * TileSize &&
+                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) < (x + 1) * TileSize &&
+                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) > y * TileSize &&
+                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) < (y + 1) * TileSize &&
+                        Mouse.GetState().RightButton == ButtonState.Pressed)
+                    {
+                        foreach(Tile tile in tiles.ToList())
+                        {
+                            if (tile.GetPosition() == new Vector2(x * TileSize, y * TileSize))
+                            {
+                                tiles.Remove(tile);
+                            }
                         }
                     }
                 }
@@ -115,13 +136,13 @@ namespace RPGame.Scipts.Core
         {
             if (tile.GetPassability() == false && GetNeighboringTiles(tile).Count < 4)
             {
-                tile.SetColor();
+                //tile.SetColor();
                 return true;
             }
 
             else if (tile.GetPassability() == false && AmountOfImpassableTiles(GetNeighboringTiles(tile)) < 4)
             {
-                tile.SetColor();
+                //tile.SetColor();
                 return true;
             }
 

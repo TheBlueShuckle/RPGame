@@ -1,21 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 using RPGame.Scipts.Components;
 using RPGame.Scipts.Core;
-using System.Collections.Generic;
-using SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState;
-using System.Linq;
 using RPGame.Scipts.Sprites.Enemies;
 using RPGame.Scipts.Editing;
-using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
+using System.Linq;
 using System;
 
 namespace RPGame.Scipts.Scenes
 {
     internal class Scene1 : Scene
     {
-        const string FILE_NAME = "Scene1";
+        const string FILE_NAME = "Scene1.txt";
 
         Player player;
         Map map;
@@ -26,6 +25,7 @@ namespace RPGame.Scipts.Scenes
         List<Component> components;
 
         KeyboardState ks1, ks2;
+        Keys lastPressedKey;
         Texture2D texture;
         SpriteFont font;
 
@@ -68,10 +68,16 @@ namespace RPGame.Scipts.Scenes
 
         public override void Update(GameTime gameTime)
         {
+            if (Keyboard.GetState().GetPressedKeys().Count() != 0)
+            {
+                lastPressedKey = Keyboard.GetState().GetPressedKeys()[0];
+            }
+
             if (Main.EditMode)
             {
-                map.EditMap(player.Pos);
+                map.EditMap(player.Pos, lastPressedKey);
                 AddNewTiles();
+                //RemoveDeletedTiles();
             }
 
             foreach (Component component in components)
@@ -134,6 +140,18 @@ namespace RPGame.Scipts.Scenes
             components.Remove(player);
             components.Insert(components.Count, player);
         }
+
+        private void RemoveDeletedTiles()
+        {
+            foreach (Tile tile in tiles.ToList())
+            {
+                if (!map.GetTiles().Contains(tile))
+                {
+                    tiles.Remove(tile);
+                }
+            }
+        }
+
 
         private void RemoveDuplicates(Tile tile)
         {
