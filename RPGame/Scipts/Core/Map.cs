@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -73,16 +74,31 @@ namespace RPGame.Scipts.Core
                         switch (lastPressedKey)
                         {
                             case Keys.V:
-                                tiles.Add(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                if (!IsDuplicate(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                                {
+                                    tiles.Add(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                }
                                 break;
+
                             case Keys.B:
-                                tiles.Add(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                if(!IsDuplicate(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                                {
+                                    tiles.Add(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                }
                                 break;
+
                             case Keys.N:
-                                tiles.Add(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                if (!IsDuplicate(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                                {
+                                    tiles.Add(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                }
                                 break;
+
                             case Keys.M:
-                                tiles.Add(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                if (!IsDuplicate(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                                {
+                                    tiles.Add(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                                }
                                 break;
                         }
                     }
@@ -104,6 +120,20 @@ namespace RPGame.Scipts.Core
                     }
                 }
             }
+        }
+
+        private bool IsDuplicate(Tile newTile)
+        {
+            foreach (Tile tile in tiles)
+            {
+                if (tile.GetPosition() == newTile.GetPosition())
+                {
+                    tiles.Insert(tiles.IndexOf(tile), newTile);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public List<Tile> GetTiles() { return tiles; }
