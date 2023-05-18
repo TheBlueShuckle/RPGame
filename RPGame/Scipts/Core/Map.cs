@@ -57,13 +57,13 @@ namespace RPGame.Scipts.Core
             }
         }
 
-        public void EditMap(Point playerCenter)
+        public void EditMap(Vector2 playerPos)
         {
             for (int x = 0; x < tileGrid.GetLength(0); x++)
             {
                 for (int y = 0; y < tileGrid.GetLength(1); y++)
                 {
-                    if (playerCenter.X > x * TileSize && playerCenter.X < (x + 1) * TileSize && playerCenter.Y > y * TileSize && playerCenter.Y < (y + 1) * TileSize && Keyboard.GetState().GetPressedKeys().Count() != 0)
+                    if (Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) > x * TileSize && Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) < (x + 1) * TileSize && Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) > y * TileSize && Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) < (y + 1) * TileSize && Keyboard.GetState().GetPressedKeys().Count() != 0)
                     {
                         switch (Keyboard.GetState().GetPressedKeys()[0])
                         {

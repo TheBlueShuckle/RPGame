@@ -70,7 +70,7 @@ namespace RPGame.Scipts.Scenes
         {
             if (Main.EditMode)
             {
-                map.EditMap(player.GetCenter());
+                map.EditMap(player.Pos);
                 AddNewTiles();
             }
 
@@ -106,7 +106,7 @@ namespace RPGame.Scipts.Scenes
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, ("" + (Mouse.GetState().Position.X - (player.Pos.X - Main.ScreenWidth / 2)) + ", " + (player.Pos.Y + Main.ScreenHeight / 2 - Mouse.GetState().Position.Y)), Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, ("" + (Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - player.Pos.X - 10) + ", " + (Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - player.Pos.Y -25 )))), Vector2.Zero, Color.Black);
 
             spriteBatch.End();
         }
