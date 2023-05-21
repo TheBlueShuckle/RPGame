@@ -90,7 +90,10 @@ namespace RPGame.Scipts.Scenes
 
             foreach (Component component in components)
             {
-                component.Update(gameTime);
+                if (IsComponentOnScreen(component))
+                {
+                    component.Update(gameTime);
+                }
             }
 
             ks1 = Keyboard.GetState();
@@ -136,10 +139,10 @@ namespace RPGame.Scipts.Scenes
             bool isOnScreen = false;
 
             if (
-                component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
-                component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2) &&
-                component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
-                component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                component.Rectangle.X + map.TileSize >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
+                component.Rectangle.Right - map.TileSize <= player.GetCenter().X + (Main.ScreenWidth / 2) &&
+                component.Rectangle.Y + map.TileSize >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
+                component.Rectangle.Bottom - map.TileSize <= player.GetCenter().Y + (Main.ScreenHeight / 2))
             {
                 isOnScreen = true;
             }
@@ -147,18 +150,18 @@ namespace RPGame.Scipts.Scenes
             if (
                 // if component.X is in range 
                 player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                component.Rectangle.Right < Main.ScreenWidth &&
+                component.Rectangle.Right - map.TileSize < Main.ScreenWidth &&
                   // if camera sees top of screen and component.Y is in range
                 ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  component.Position.Y < Main.ScreenHeight) ||
+                  component.Position.Y - map.TileSize < Main.ScreenHeight) ||
                  // else if camera sees bottom of screen and component.Y is in range
                  (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  component.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                  component.Position.Y + map.TileSize > map.MapSize.Bottom - (Main.ScreenHeight)) ||
                  // else if camera sees neither the bottom or the top and component.Y is in range
                  (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
                   player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  component.Position.Y < player.Position.Y + (Main.ScreenHeight / 2) &&
-                  component.Position.Y > player.Position.Y - (Main.ScreenHeight / 2))))
+                  component.Position.Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2) &&
+                  component.Position.Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2))))
             {
                 isOnScreen = true;
             }
