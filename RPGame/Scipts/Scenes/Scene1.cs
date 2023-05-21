@@ -9,6 +9,7 @@ using RPGame.Scipts.Editing;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Reflection.Metadata;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -28,6 +29,7 @@ namespace RPGame.Scipts.Scenes
         Keys lastPressedKey;
         Texture2D texture;
         SpriteFont font;
+        int tilesStartCount;
 
         private Camera camera;
 
@@ -48,6 +50,7 @@ namespace RPGame.Scipts.Scenes
             camera = new Camera(map.MapSize);
 
             tiles = map.GetTiles();
+            tilesStartCount = map.GetTiles().Count;
             impassableTiles = map.GetImpassableTiles();
 
             player = new Player(map.TileSize, impassableTiles, texture);
@@ -77,10 +80,11 @@ namespace RPGame.Scipts.Scenes
             {
                 map.EditMap(player.Position, lastPressedKey);
 
-                if (tiles.Count != map.GetTiles().Count)
+                if (tilesStartCount != map.GetTiles().Count)
                 {
                     AddNewTiles();
-                    //RemoveDeletedTiles();
+                    RemoveDeletedTiles();
+                    tilesStartCount = tiles.Count;
                 }
             }
 
@@ -103,66 +107,118 @@ namespace RPGame.Scipts.Scenes
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            int elementsOnScreen = 0;
+
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
             map.Draw(spriteBatch);
 
             foreach (Component component in components)
             {
-                if (
-                    component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) && 
-                    component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2) && 
-                    component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) && 
-                    component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                if (IsComponentOnScreen(component))
                 {
                     component.Draw(gameTime, spriteBatch);
+                    elementsOnScreen++;
                 }
-                
-                else if (
-                    player.Position.X < Main.ScreenHeight / 2 &&
-                    component.Rectangle.Right <= Main.ScreenWidth &&
-                    component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
-                    component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
-                {
-                    component.Draw(gameTime, spriteBatch);
-                }
-
-                else if (
-                    player.Position.X >= map.MapSize.Right - Main.ScreenWidth / 2 &&
-                    component.Rectangle.Right >= player.Position.X - Main.ScreenWidth &&
-                    component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
-                    component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
-                {
-                    component.Draw(gameTime, spriteBatch);
-                }
-
-                else if (
-                    player.Position.Y <= Main.ScreenHeight / 2 &&
-                    component.Rectangle.Bottom <= Main.ScreenHeight && 
-                    component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
-                    component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2))
-                {
-                    component.Draw(gameTime, spriteBatch);
-                }
-
-                else if (
-                    player.Position.Y >= map.MapSize.Bottom - Main.ScreenHeight / 2 &&
-                    component.Rectangle.Right >= player.Position.Y - Main.ScreenHeight &&
-                    component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
-                    component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2))
-                {
-                    component.Draw(gameTime, spriteBatch);
-                }
-                
             }
 
             spriteBatch.End();
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "" + player.Position, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + elementsOnScreen, Vector2.Zero, Color.Black);
 
             spriteBatch.End();
+        }
+
+        private bool IsComponentOnScreen(Component component)
+        {
+            bool isOnScreen = false;
+
+            if (
+                component.Rectangle.X >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
+                component.Rectangle.Right <= player.GetCenter().X + (Main.ScreenWidth / 2) &&
+                component.Rectangle.Y >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
+                component.Rectangle.Bottom <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+            {
+                isOnScreen = true;
+            }
+
+            if (
+                // if component.X is in range 
+                player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
+                component.Rectangle.Right < Main.ScreenWidth &&
+                  // if camera sees top of screen and component.Y is in range
+                ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
+                  component.Position.Y < Main.ScreenHeight) ||
+                 // else if camera sees bottom of screen and component.Y is in range
+                 (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
+                  component.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                 // else if camera sees neither the bottom or the top and component.Y is in range
+                 (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
+                  player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
+                  component.Position.Y < player.Position.Y + (Main.ScreenHeight / 2) &&
+                  component.Position.Y > player.Position.Y - (Main.ScreenHeight / 2))))
+            {
+                isOnScreen = true;
+            }
+
+            if (
+                player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
+                component.Rectangle.X > map.MapSize.Right - Main.ScreenWidth &&
+                  // if camera sees top of screen and component.Y is in range
+                ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
+                  component.Position.Y < Main.ScreenHeight) ||
+                  // else if camera sees bottom of screen and component.Y is in range
+                 (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
+                  component.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                  // else if camera sees neither the bottom or the top and component.Y is in range
+                 (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
+                  player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
+                  component.Position.Y < player.Position.Y + (Main.ScreenHeight / 2) &&
+                  component.Position.Y > player.Position.Y - (Main.ScreenHeight / 2))))
+
+            {
+                isOnScreen = true;
+            }
+            
+            if (
+                player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
+                component.Rectangle.Bottom < Main.ScreenHeight &&                   
+                  // if camera sees left of screen and component.X is in range
+                ((player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
+                  component.Position.X < Main.ScreenWidth) ||
+                 // else if camera sees right of screen and component.X is in range
+                 (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
+                  component.Position.X > map.MapSize.Right - (Main.ScreenWidth)) ||
+                 // else if camera sees neither the bottom or the top and component.X is in range
+                 (player.Position.X > map.MapSize.X + (Main.ScreenWidth / 2) &&
+                  player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2) &&
+                  component.Position.X < player.Position.X + (Main.ScreenWidth / 2) &&
+                  component.Position.X > player.Position.X - (Main.ScreenWidth / 2))))
+            {
+                isOnScreen = true;
+            }
+
+            if (
+                player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
+                component.Rectangle.Y > map.MapSize.Bottom - Main.ScreenHeight && 
+                 // if camera sees left of screen and component.X is in range
+                ((player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
+                  component.Position.X < Main.ScreenWidth) ||
+                 // else if camera sees right of screen and component.X is in range
+                 (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
+                  component.Position.X > map.MapSize.Right - (Main.ScreenWidth)) ||
+                 // else if camera sees neither the bottom or the top and component.X is in range
+                 (player.Position.X > map.MapSize.X + (Main.ScreenWidth / 2) &&
+                  player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2) &&
+                  component.Position.X < player.Position.X + (Main.ScreenWidth / 2) &&
+                  component.Position.X > player.Position.X - (Main.ScreenWidth / 2))))
+            {
+                isOnScreen = true;
+            }
+
+            return isOnScreen;
         }
 
         protected override void LoadTextures(GraphicsDevice GraphicsDevice, ContentManager Content)

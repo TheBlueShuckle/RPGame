@@ -32,7 +32,9 @@ namespace RPGame.Scipts
         }
 
         protected override void Initialize()
-        {            
+        {
+            sceneHandler = new SceneHandler();
+
             EditMode = false;
 
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
@@ -40,22 +42,20 @@ namespace RPGame.Scipts
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
 
+            ScreenWidth = graphics.PreferredBackBufferWidth;
+            ScreenHeight = graphics.PreferredBackBufferHeight;
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
 
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
             Font = Content.Load<SpriteFont>("Font/Font");
-
-            ScreenWidth = graphics.PreferredBackBufferWidth;
-            ScreenHeight = graphics.PreferredBackBufferHeight;
-
-            sceneHandler = new SceneHandler();
 
             foreach (Scene1 scene in sceneHandler.GetScenes)
             {
