@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Reflection.Metadata;
+using System.ComponentModel;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -21,7 +22,6 @@ namespace RPGame.Scipts.Scenes
         Map map;
         MapSaver mapSaver;
 
-        List<Tile> tiles, impassableTiles;
         List<Enemy> enemies = new List<Enemy>();
         List<Component> components;
 
@@ -49,17 +49,11 @@ namespace RPGame.Scipts.Scenes
 
             camera = new Camera(map.MapSize);
 
-            tiles = map.GetTiles();
             tilesStartCount = map.GetTiles().Count;
-            impassableTiles = map.GetImpassableTiles();
 
-            player = new Player(map.TileSize, impassableTiles, texture);
+            player = new Player(map.TileSize, map.GetImpassableTiles(), texture);
             components = new List<Component>();
 
-            foreach (Tile tile in tiles)
-            {
-                components.Add(tile);
-            }
 
             foreach (Enemy enemy in enemies)
             {
@@ -79,21 +73,11 @@ namespace RPGame.Scipts.Scenes
             if (Main.EditMode)
             {
                 map.EditMap(player.Position, lastPressedKey);
-
-                if (tilesStartCount != map.GetTiles().Count)
-                {
-                    AddNewTiles();
-                    RemoveDeletedTiles();
-                    tilesStartCount = tiles.Count;
-                }
             }
 
             foreach (Component component in components)
             {
-                if (IsComponentOnScreen(component))
-                {
-                    component.Update(gameTime);
-                }
+                component.Update(gameTime);
             }
 
             ks1 = Keyboard.GetState();
@@ -110,39 +94,45 @@ namespace RPGame.Scipts.Scenes
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            int elementsOnScreen = 0;
+            int tilesOnScreen = 0;
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
             map.Draw(spriteBatch);
 
+            foreach (Tile tile in map.GetTiles())
+            {
+                if (IsTileOnScreen(tile))
+                {
+                    tile.Draw(gameTime, spriteBatch);
+                    tilesOnScreen++;
+                }
+            }
+
             foreach (Component component in components)
             {
-                if (IsComponentOnScreen(component))
-                {
-                    component.Draw(gameTime, spriteBatch);
-                    elementsOnScreen++;
-                }
+                component.Draw(gameTime, spriteBatch);
             }
 
             spriteBatch.End();
 
+
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "" + elementsOnScreen, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + tilesOnScreen, Vector2.Zero, Color.Black);
 
             spriteBatch.End();
         }
 
-        private bool IsComponentOnScreen(Component component)
+        private bool IsTileOnScreen(Tile tile)
         {
             bool isOnScreen = false;
 
             if (
-                component.Rectangle.X + map.TileSize >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
-                component.Rectangle.Right - map.TileSize <= player.GetCenter().X + (Main.ScreenWidth / 2) &&
-                component.Rectangle.Y + map.TileSize >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
-                component.Rectangle.Bottom - map.TileSize <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                tile.Rectangle.X + map.TileSize >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
+                tile.Rectangle.Right - map.TileSize <= player.GetCenter().X + (Main.ScreenWidth / 2) &&
+                tile.Rectangle.Y + map.TileSize >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
+                tile.Rectangle.Bottom - map.TileSize <= player.GetCenter().Y + (Main.ScreenHeight / 2))
             {
                 isOnScreen = true;
             }
@@ -150,36 +140,36 @@ namespace RPGame.Scipts.Scenes
             if (
                 // if component.X is in range 
                 player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                component.Rectangle.Right - map.TileSize < Main.ScreenWidth &&
+                tile.Rectangle.Right - map.TileSize < Main.ScreenWidth &&
                   // if camera sees top of screen and component.Y is in range
                 ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  component.Position.Y - map.TileSize < Main.ScreenHeight) ||
+                  tile.Position.Y - map.TileSize < Main.ScreenHeight) ||
                  // else if camera sees bottom of screen and component.Y is in range
                  (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  component.Position.Y + map.TileSize > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                  tile.Position.Y + map.TileSize > map.MapSize.Bottom - (Main.ScreenHeight)) ||
                  // else if camera sees neither the bottom or the top and component.Y is in range
                  (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
                   player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  component.Position.Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2) &&
-                  component.Position.Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2))))
+                  tile.Position.Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2) &&
+                  tile.Position.Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2))))
             {
                 isOnScreen = true;
             }
 
             if (
                 player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                component.Rectangle.X > map.MapSize.Right - Main.ScreenWidth &&
+                tile.Rectangle.X > map.MapSize.Right - Main.ScreenWidth &&
                   // if camera sees top of screen and component.Y is in range
                 ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  component.Position.Y < Main.ScreenHeight) ||
+                  tile.Position.Y < Main.ScreenHeight) ||
                   // else if camera sees bottom of screen and component.Y is in range
                  (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  component.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                  tile.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight)) ||
                   // else if camera sees neither the bottom or the top and component.Y is in range
                  (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
                   player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  component.Position.Y < player.Position.Y + (Main.ScreenHeight / 2) &&
-                  component.Position.Y > player.Position.Y - (Main.ScreenHeight / 2))))
+                  tile.Position.Y < player.Position.Y + (Main.ScreenHeight / 2) &&
+                  tile.Position.Y > player.Position.Y - (Main.ScreenHeight / 2))))
 
             {
                 isOnScreen = true;
@@ -187,36 +177,36 @@ namespace RPGame.Scipts.Scenes
             
             if (
                 player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                component.Rectangle.Bottom < Main.ScreenHeight &&                   
+                tile.Rectangle.Bottom < Main.ScreenHeight &&                   
                   // if camera sees left of screen and component.X is in range
                 ((player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                  component.Position.X < Main.ScreenWidth) ||
+                  tile.Position.X < Main.ScreenWidth) ||
                  // else if camera sees right of screen and component.X is in range
                  (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  component.Position.X > map.MapSize.Right - (Main.ScreenWidth)) ||
+                  tile.Position.X > map.MapSize.Right - (Main.ScreenWidth)) ||
                  // else if camera sees neither the bottom or the top and component.X is in range
                  (player.Position.X > map.MapSize.X + (Main.ScreenWidth / 2) &&
                   player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  component.Position.X < player.Position.X + (Main.ScreenWidth / 2) &&
-                  component.Position.X > player.Position.X - (Main.ScreenWidth / 2))))
+                  tile.Position.X < player.Position.X + (Main.ScreenWidth / 2) &&
+                  tile.Position.X > player.Position.X - (Main.ScreenWidth / 2))))
             {
                 isOnScreen = true;
             }
 
             if (
                 player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                component.Rectangle.Y > map.MapSize.Bottom - Main.ScreenHeight && 
+                tile.Rectangle.Y > map.MapSize.Bottom - Main.ScreenHeight && 
                  // if camera sees left of screen and component.X is in range
                 ((player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                  component.Position.X < Main.ScreenWidth) ||
+                  tile.Position.X < Main.ScreenWidth) ||
                  // else if camera sees right of screen and component.X is in range
                  (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  component.Position.X > map.MapSize.Right - (Main.ScreenWidth)) ||
+                  tile.Position.X > map.MapSize.Right - (Main.ScreenWidth)) ||
                  // else if camera sees neither the bottom or the top and component.X is in range
                  (player.Position.X > map.MapSize.X + (Main.ScreenWidth / 2) &&
                   player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  component.Position.X < player.Position.X + (Main.ScreenWidth / 2) &&
-                  component.Position.X > player.Position.X - (Main.ScreenWidth / 2))))
+                  tile.Position.X < player.Position.X + (Main.ScreenWidth / 2) &&
+                  tile.Position.X > player.Position.X - (Main.ScreenWidth / 2))))
             {
                 isOnScreen = true;
             }
@@ -230,45 +220,6 @@ namespace RPGame.Scipts.Scenes
             texture.SetData(new Color[] { Color.White });
 
             font = Content.Load<SpriteFont>("Font/Font");
-        }
-
-        private void AddNewTiles()
-        {
-            foreach (Tile tile in map.GetTiles().ToList())
-            {
-                if (!components.Contains(tile))
-                {
-                    components.Add(tile);
-                    RemoveDuplicates(tile);
-                    map.SeeIfNewTileHasCollision(tile);
-                }
-            }
-
-            components.Remove(player);
-            components.Insert(components.Count, player);
-        }
-
-        private void RemoveDeletedTiles()
-        {
-            foreach (Tile tile in tiles.ToList())
-            {
-                if (!map.GetTiles().Contains(tile))
-                {
-                    tiles.Remove(tile);
-                }
-            }
-        }
-
-
-        private void RemoveDuplicates(Tile tile)
-        {
-            foreach (Tile oldTile in tiles.ToList())
-            {
-                if (oldTile.Position == tile.Position && oldTile != tile)
-                {
-                    tiles.Remove(oldTile);
-                }
-            }
         }
     }
 }

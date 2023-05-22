@@ -6,7 +6,7 @@ using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace RPGame.Scipts.Components
 {
-    internal class Tile : Component
+    internal class Tile
     {
         const int PATH = 1, GRASS = 2, TREES = 3, WATER = 4;
 
@@ -14,9 +14,9 @@ namespace RPGame.Scipts.Components
         Color color;
         bool passable;
 
-        public override Rectangle Rectangle { get; set; }
+        public Rectangle Rectangle { get; set; }
 
-        public override Vector2 Position { get; set; }
+        public Vector2 Position { get; set; }
 
         public int Material { get; private set; }
 
@@ -55,12 +55,12 @@ namespace RPGame.Scipts.Components
             }
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
 
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, Rectangle, color);
         }
