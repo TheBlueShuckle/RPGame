@@ -16,7 +16,7 @@ namespace RPGame.Scipts.Scenes
 {
     internal class Scene1 : Scene
     {
-        const string FILE_NAME = "Scene1.txt";
+        const string FILE_NAME = "TileMaps\\Scene1.txt";
 
         Player player;
         Map map;

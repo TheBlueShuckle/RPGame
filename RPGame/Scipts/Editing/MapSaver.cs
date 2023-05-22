@@ -18,7 +18,9 @@ namespace RPGame.Scipts.Editing
 
         public void SaveMap(string fileName, List<Tile> tiles)
         {
-            FileStream overwriteFile = File.Open("C:\\Users\\ville\\source\\repos\\RPGame\\RPGame\\TileMaps\\" + fileName, FileMode.Create);
+            string fullPath = Path.GetFullPath(fileName);
+
+            FileStream overwriteFile = File.Open(fullPath, FileMode.Create);
 
             writer = new StreamWriter(overwriteFile);
 
@@ -32,7 +34,9 @@ namespace RPGame.Scipts.Editing
 
         public List<int> LoadMap(string fileName)
         {
-            reader = new StreamReader("C:\\Users\\ville\\source\\repos\\RPGame\\RPGame\\TileMaps\\" + fileName);
+            string fullPath = Path.GetFullPath(fileName);
+
+            reader = new StreamReader(fullPath);
             List<int> result = new List<int>();
 
             while(!reader.EndOfStream)
