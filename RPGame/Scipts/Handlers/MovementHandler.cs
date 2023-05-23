@@ -32,7 +32,7 @@ namespace RPGame.Scipts.Handlers
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
             Movement(gameTime, impassableTiles);
-            pos = new Vector2((float)Math.Round(Pos.X + velocity.X, 0), (float)Math.Round(Pos.Y + velocity.Y, 0));
+            pos = pos + velocity;
             Hitbox = new Rectangle(Pos.ToPoint(), size.ToPoint());
         }
 

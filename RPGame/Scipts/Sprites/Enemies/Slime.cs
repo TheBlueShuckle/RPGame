@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using RPGame.Scipts.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace RPGame.Scipts.Sprites.Enemies
 {
     internal class Slime : Enemy
     {
-        Vector2 pos, velocity = Vector2.Zero;
         Texture2D texture;
+        
+        EnemyMovementHandler enemyMovementHandler;
 
         public override float HP { get; set; }
 
@@ -21,28 +23,22 @@ namespace RPGame.Scipts.Sprites.Enemies
 
         public override Rectangle Rectangle { get; set; }
 
-        public Slime(Vector2 pos, Texture2D texture)
+        public Slime(int tileSize, Vector2 pos, Texture2D texture)
         {
-            this.pos = pos;
+            Position = pos;
             this.texture = texture;
+
+            enemyMovementHandler = new EnemyMovementHandler(tileSize * 2, pos, new Vector2(Main.ScreenWidth / 128, Main.ScreenWidth / 96));
+
             Rectangle = new Rectangle(pos.ToPoint(), new Point(30, 30));
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (GetCenter().X > 0)
-            {
-                velocity.X = 3;
-            }
+            enemyMovementHandler.Update(gameTime, GetCenter());
 
-            if (GetCenter().X > 100)
-            {
-                velocity.X = -3;
-            }
-
-            pos += velocity;
-
-            Rectangle = new Rectangle(pos.ToPoint(), new Point(30, 30));
+            Position = enemyMovementHandler.Position;
+            Rectangle = enemyMovementHandler.Rectangle;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -50,9 +46,9 @@ namespace RPGame.Scipts.Sprites.Enemies
             spriteBatch.Draw(texture, Rectangle, Color.LightBlue);
         }
 
-        private Vector2 GetCenter()
+        private Point GetCenter()
         {
-            return new Vector2(Rectangle.X + (Rectangle.Width / 2), Rectangle.Y + (Rectangle.Height/ 2));
+            return Rectangle.Center;
         }
     }
 }

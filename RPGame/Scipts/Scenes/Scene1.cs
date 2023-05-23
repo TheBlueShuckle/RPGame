@@ -54,6 +54,7 @@ namespace RPGame.Scipts.Scenes
             player = new Player(map.TileSize, map.GetImpassableTiles(), texture);
             components = new List<Component>();
 
+            enemies.Add(new Slime(map.TileSize, new Vector2(map.TileSize, map.TileSize), texture));
 
             foreach (Enemy enemy in enemies)
             {
