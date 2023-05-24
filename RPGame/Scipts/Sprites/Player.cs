@@ -23,7 +23,7 @@ namespace RPGame.Scipts.Components
             this.impassableTiles = impassableTiles;
             this.texture = texture;
 
-            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(Main.ScreenWidth / 128, Main.ScreenWidth / 96));
+            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(Main.ScreenWidth / 32, Main.ScreenWidth / 24));
 
             Position = movementHandler.Pos;
             Rectangle = movementHandler.Hitbox;

@@ -17,6 +17,7 @@ namespace RPGame.Scipts
 
         public static int ScreenWidth;
         public static int ScreenHeight;
+
         public static SpriteFont Font { get; set; }
         public static bool EditMode { get; set; }
 

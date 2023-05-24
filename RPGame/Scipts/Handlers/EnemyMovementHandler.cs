@@ -30,12 +30,12 @@ namespace RPGame.Scipts.Handlers
 
         private void Movement(GameTime gameTime, Point center)
         {
-            if (center.X < 0 || velocity.X == 0)
+            if (center.X < 0 + Rectangle.Width / 2 || velocity.X == 0)
             {
                 velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
 
-            if (center.X > Main.ScreenWidth)
+            if (center.X > Main.ScreenWidth - Rectangle.Width / 2)
             {
                 velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }

@@ -24,7 +24,7 @@ namespace RPGame.Scipts.Core
             this.texture = texture;
             tileGrid = new Vector2[tileGridSize[0], tileGridSize[1]];
 
-            TileSize = Main.ScreenWidth / 64;
+            TileSize = Main.ScreenWidth / 32;
             MapSize = new Rectangle(0, 0, tileGridSize[0] * TileSize, tileGridSize[1] * TileSize);
 
             for (int y = 0; y < tileGrid.GetLength(1); y++)

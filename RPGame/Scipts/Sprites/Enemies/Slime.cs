@@ -12,7 +12,8 @@ namespace RPGame.Scipts.Sprites.Enemies
     internal class Slime : Enemy
     {
         Texture2D texture;
-        
+        Vector2 size = new Vector2(Main.ScreenWidth / 48, Main.ScreenWidth / 48);
+
         EnemyMovementHandler enemyMovementHandler;
 
         public override float HP { get; set; }
@@ -28,7 +29,7 @@ namespace RPGame.Scipts.Sprites.Enemies
             Position = pos;
             this.texture = texture;
 
-            enemyMovementHandler = new EnemyMovementHandler(tileSize * 2, pos, new Vector2(Main.ScreenWidth / 128, Main.ScreenWidth / 96));
+            enemyMovementHandler = new EnemyMovementHandler(tileSize * 2, pos, size);
 
             Rectangle = new Rectangle(pos.ToPoint(), new Point(30, 30));
         }
