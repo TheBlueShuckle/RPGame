@@ -57,17 +57,17 @@ namespace RPGame.Scipts.Core
             }
         }
 
-        public void EditMap(Vector2 playerPos, Keys lastPressedKey)
+        public void EditMap(Vector2 playerPos, Keys lastPressedKey, Vector2 mousePosition)
         {
             for (int x = 0; x < tileGrid.GetLength(0); x++)
             {
                 for (int y = 0; y < tileGrid.GetLength(1); y++)
                 {
                     if (
-                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) > x * TileSize &&
-                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) < (x + 1) * TileSize &&
-                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) > y * TileSize &&
-                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) < (y + 1) * TileSize &&
+                        mousePosition.X > x * TileSize &&
+                        mousePosition.X < (x + 1) * TileSize &&
+                        mousePosition.Y > y * TileSize &&
+                        mousePosition.Y < (y + 1) * TileSize &&
                         (lastChangedTile == null || lastChangedTile.Rectangle != new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))  &&
                         Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
@@ -75,10 +75,10 @@ namespace RPGame.Scipts.Core
                     }
 
                     else if (
-                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) > x * TileSize &&
-                        Mouse.GetState().Position.X - (Main.ScreenWidth / 2 - playerPos.X - 10) < (x + 1) * TileSize &&
-                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) > y * TileSize &&
-                        Mouse.GetState().Position.Y - (Main.ScreenHeight / 2 - playerPos.Y - 25) < (y + 1) * TileSize &&
+                        mousePosition.X > x * TileSize &&
+                        mousePosition.X < (x + 1) * TileSize &&
+                        mousePosition.Y > y * TileSize &&
+                        mousePosition.Y < (y + 1) * TileSize &&
                         (lastChangedTile == null || lastChangedTile.Rectangle != new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)) &&
                         Mouse.GetState().RightButton == ButtonState.Pressed)
                     {
@@ -110,12 +110,12 @@ namespace RPGame.Scipts.Core
                     if (!IsDuplicate(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
                         tiles.Add(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        lastChangedTile = new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;
@@ -124,12 +124,12 @@ namespace RPGame.Scipts.Core
                     if (!IsDuplicate(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
                         tiles.Add(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        lastChangedTile = new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;
@@ -138,12 +138,12 @@ namespace RPGame.Scipts.Core
                     if (!IsDuplicate(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
                         tiles.Add(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        lastChangedTile = new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;

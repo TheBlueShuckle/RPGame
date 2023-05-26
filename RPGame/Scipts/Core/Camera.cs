@@ -35,7 +35,7 @@ namespace RPGame.Scipts.Core
             StopCamera(centre);
 
             transform = newCentre *
-                        Matrix.CreateScale(new Vector3(Zoom, Zoom, 0)) *
+                        Matrix.CreateScale(Zoom) *
                         Matrix.CreateTranslation(new Vector3(viewport.Width / 2, viewport.Height / 2, 0));
         }
 
@@ -46,27 +46,33 @@ namespace RPGame.Scipts.Core
             x = -centre.X;
             y = -centre.Y;
 
-            if (position.X < border.X + (Main.ScreenWidth / 2))
+            if (position.X < border.X + (Main.ScreenWidth / 2) && !Main.EditMode)
             {
                 x = -Main.ScreenWidth / 2;
             }
 
-            if (position.X > border.Right - (Main.ScreenWidth / 2))
+            if (position.X > border.Right - (Main.ScreenWidth / 2) && !Main.EditMode)
             {
                 x = -border.Right + Main.ScreenWidth / 2;
             }
 
-            if (position.Y < border.Y + (Main.ScreenHeight / 2))
+            if (position.Y < border.Y + (Main.ScreenHeight / 2) && !Main.EditMode)
             {
                 y = -Main.ScreenHeight / 2;
             }
 
-            if (position.Y > border.Bottom - (Main.ScreenHeight / 2))
+            if (position.Y > border.Bottom - (Main.ScreenHeight / 2) && !Main.EditMode)
             {
                 y = -border.Bottom + Main.ScreenHeight / 2;
             }
 
             newCentre = Matrix.CreateTranslation(x, y, 0);
+        }
+
+        public Vector2 ScreenToWorldSpace(Vector2 point)
+        {
+            Matrix invertedMatrix = Matrix.Invert(Transform);
+            return Vector2.Transform(point, invertedMatrix);
         }
     }
 }

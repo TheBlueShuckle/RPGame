@@ -29,6 +29,7 @@ namespace RPGame.Scipts.Scenes
         Keys lastPressedKey;
         Texture2D texture;
         SpriteFont font;
+        Vector2 inWorldMousePosition;
         int tilesStartCount;
 
         private Camera camera;
@@ -66,14 +67,21 @@ namespace RPGame.Scipts.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().GetPressedKeys().Count() != 0)
+            if (Keyboard.GetState().GetPressedKeys().Count() != 0 &&
+                !Keyboard.GetState().IsKeyDown(Keys.W) &&
+                !Keyboard.GetState().IsKeyDown(Keys.A) &&
+                !Keyboard.GetState().IsKeyDown(Keys.S) &&
+                !Keyboard.GetState().IsKeyDown(Keys.D) &&
+                !Keyboard.GetState().IsKeyDown(Keys.LeftShift) &&
+                !Keyboard.GetState().IsKeyDown(Keys.Up) &&
+                !Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 lastPressedKey = Keyboard.GetState().GetPressedKeys()[0];
             }
 
             if (Main.EditMode)
             {
-                map.EditMap(player.Position, lastPressedKey);
+                map.EditMap(player.Position, lastPressedKey, camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()));
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 {
@@ -118,7 +126,13 @@ namespace RPGame.Scipts.Scenes
 
             foreach (Tile tile in map.GetTiles())
             {
-                if (IsTileOnScreen(tile))
+                if (!Main.EditMode && IsTileOnScreen(tile))
+                {
+                    tile.Draw(gameTime, spriteBatch);
+                    tilesOnScreen++;
+                }
+
+                else if (Main.EditMode)
                 {
                     tile.Draw(gameTime, spriteBatch);
                     tilesOnScreen++;
@@ -139,7 +153,7 @@ namespace RPGame.Scipts.Scenes
         {
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "" + tilesOnScreen, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + lastPressedKey, Vector2.Zero, Color.Black);
             spriteBatch.DrawString(font, "" + camera.Zoom, new Vector2(0, 100), Color.Black);
 
             spriteBatch.End();
