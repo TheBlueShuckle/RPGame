@@ -47,7 +47,7 @@ namespace RPGame.Scipts.Scenes
             mapSaver = new MapSaver();
             map.GenerateMap(mapSaver.LoadMap(FILE_NAME));
 
-            camera = new Camera(map.MapSize);
+            camera = new Camera(GraphicsDevice.Viewport, map.MapSize);
 
             tilesStartCount = map.GetTiles().Count;
 
@@ -74,6 +74,21 @@ namespace RPGame.Scipts.Scenes
             if (Main.EditMode)
             {
                 map.EditMap(player.Position, lastPressedKey);
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+                    camera.Zoom += 0.01f;
+                }
+
+                else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                    camera.Zoom -= 0.01f;
+                }
+            }
+
+            else
+            {
+                camera.Zoom = 1;
             }
 
             foreach (Component component in components)
@@ -90,14 +105,14 @@ namespace RPGame.Scipts.Scenes
 
             ks2 = ks1;
 
-            camera.Follow(player);
+            camera.Update(player.GetCenter().ToVector2());
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             int tilesOnScreen = 0;
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
 
             map.Draw(spriteBatch);
 
@@ -117,10 +132,15 @@ namespace RPGame.Scipts.Scenes
 
             spriteBatch.End();
 
+            DrawHUD(spriteBatch, tilesOnScreen);
+        }
 
+        private void DrawHUD(SpriteBatch spriteBatch, int tilesOnScreen)
+        {
             spriteBatch.Begin();
 
             spriteBatch.DrawString(font, "" + tilesOnScreen, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + camera.Zoom, new Vector2(0, 100), Color.Black);
 
             spriteBatch.End();
         }

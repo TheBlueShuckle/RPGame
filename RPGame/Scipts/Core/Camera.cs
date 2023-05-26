@@ -1,68 +1,72 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using RPGame.Scipts.Components;
+using SharpDX.Direct2D1.Effects;
+using System.Security.Permissions;
 
 namespace RPGame.Scipts.Core
 {
     internal class Camera
     {
-        Matrix pos;
+        Matrix transform, newCentre;
         Rectangle border;
+        Vector2 centre;
+        Viewport viewport;
+        float zoom = 1;
 
-        public Matrix Transform { get; private set; }
+        public Matrix Transform { get { return transform; } }
 
-        public Camera(Rectangle border)
+        public float X { get { return centre.X; } set { centre.X = value; } }
+
+        public float Y { get { return centre.Y; } set { centre.Y = value; } }
+
+        public float Zoom { get { return zoom; } set {  zoom = value; if (zoom > 3) { zoom = 3; } else if (zoom < 0.1) { zoom = 0.1f; } } }
+
+        public Camera(Viewport viewport, Rectangle border)
         {
+            this.viewport = viewport;
             this.border = border;
         }
 
-        public void Follow(Player target)
+        public void Update(Vector2 position)
         {
-            pos = Matrix.CreateTranslation(
-                -target.Position.X - target.Rectangle.Width / 2,
-                -target.Position.Y - target.Rectangle.Height / 2,
-                0);
+            centre = position;
 
-            if (!Main.EditMode)
-            {
-                StopCamera(target);
-            }
+            StopCamera(centre);
 
-            Matrix offset = Matrix.CreateTranslation(
-                    Main.ScreenWidth / 2,
-                    Main.ScreenHeight / 2,
-                    0);
-
-            Transform = pos * offset;
+            transform = newCentre *
+                        Matrix.CreateScale(new Vector3(Zoom, Zoom, 0)) *
+                        Matrix.CreateTranslation(new Vector3(viewport.Width / 2, viewport.Height / 2, 0));
         }
 
-        public void StopCamera(Player target)
+        public void StopCamera(Vector2 position)
         {
             float x, y;
 
-            x = -target.Position.X - target.Rectangle.Width / 2;
-            y = -target.Position.Y - target.Rectangle.Height / 2;
+            x = -centre.X;
+            y = -centre.Y;
 
-            if (target.Position.X < border.X + (Main.ScreenWidth / 2))
+            if (position.X < border.X + (Main.ScreenWidth / 2))
             {
                 x = -Main.ScreenWidth / 2;
             }
 
-            if (target.Position.X > border.Right - (Main.ScreenWidth / 2))
+            if (position.X > border.Right - (Main.ScreenWidth / 2))
             {
                 x = -border.Right + Main.ScreenWidth / 2;
             }
 
-            if (target.Position.Y < border.Y + (Main.ScreenHeight / 2))
+            if (position.Y < border.Y + (Main.ScreenHeight / 2))
             {
                 y = -Main.ScreenHeight / 2;
             }
 
-            if (target.Position.Y > border.Bottom - (Main.ScreenHeight / 2))
+            if (position.Y > border.Bottom - (Main.ScreenHeight / 2))
             {
                 y = -border.Bottom + Main.ScreenHeight / 2;
             }
 
-            pos = Matrix.CreateTranslation(x, y, 0);
+            newCentre = Matrix.CreateTranslation(x, y, 0);
         }
     }
 }
