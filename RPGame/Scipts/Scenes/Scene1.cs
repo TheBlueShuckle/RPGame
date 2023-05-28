@@ -52,7 +52,7 @@ namespace RPGame.Scipts.Scenes
 
             tilesStartCount = map.GetTiles().Count;
 
-            player = new Player(map.TileSize, map.GetImpassableTiles(), texture);
+            player = new Player(map.TileSize, map.GetImpassableTiles(), Content.Load<Texture2D>("Sprites/Player"));
             components = new List<Component>();
 
             enemies.Add(new Slime(map.TileSize, new Vector2(map.TileSize, map.TileSize), texture));

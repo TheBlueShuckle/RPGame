@@ -7,7 +7,7 @@ namespace RPGame.Scipts
     {
         public abstract Vector2 Position { get; set; }
 
-        public abstract Rectangle Rectangle { get; set; }
+        public abstract Rectangle Hitbox { get; set; }
 
         public abstract void Update(GameTime gameTime);
 

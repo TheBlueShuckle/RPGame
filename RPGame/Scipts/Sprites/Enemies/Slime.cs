@@ -22,7 +22,7 @@ namespace RPGame.Scipts.Sprites.Enemies
 
         public override Vector2 Position { get; set; }
 
-        public override Rectangle Rectangle { get; set; }
+        public override Rectangle Hitbox { get; set; }
 
         public Slime(int tileSize, Vector2 pos, Texture2D texture)
         {
@@ -31,7 +31,7 @@ namespace RPGame.Scipts.Sprites.Enemies
 
             enemyMovementHandler = new EnemyMovementHandler(tileSize * 2, pos, size);
 
-            Rectangle = new Rectangle(pos.ToPoint(), new Point(30, 30));
+            Hitbox = new Rectangle(pos.ToPoint(), new Point(30, 30));
         }
 
         public override void Update(GameTime gameTime)
@@ -39,17 +39,17 @@ namespace RPGame.Scipts.Sprites.Enemies
             enemyMovementHandler.Update(gameTime, GetCenter());
 
             Position = enemyMovementHandler.Position;
-            Rectangle = enemyMovementHandler.Rectangle;
+            Hitbox = enemyMovementHandler.Rectangle;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Rectangle, Color.LightBlue);
+            spriteBatch.Draw(texture, Hitbox, Color.LightBlue);
         }
 
         private Point GetCenter()
         {
-            return Rectangle.Center;
+            return Hitbox.Center;
         }
     }
 }
