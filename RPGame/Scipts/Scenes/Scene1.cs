@@ -11,6 +11,7 @@ using System.Linq;
 using System;
 using System.Reflection.Metadata;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -44,7 +45,7 @@ namespace RPGame.Scipts.Scenes
         {
             LoadTextures(GraphicsDevice, Content);
 
-            map = new Map(texture, new int[] { 128, 72 });
+            map = new Map(Content.Load<Texture2D>("Sprites/Tileset"), new int[] { 128, 72 });
             mapSaver = new MapSaver();
             map.GenerateMap(mapSaver.LoadMap(FILE_NAME));
 

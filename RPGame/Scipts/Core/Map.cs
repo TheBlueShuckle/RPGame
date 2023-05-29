@@ -16,12 +16,12 @@ namespace RPGame.Scipts.Core
 
         List<Tile> tiles = new List<Tile>();
         Vector2[,] tileGrid;
-        Texture2D texture;
+        Texture2D tileSet;
         Tile lastChangedTile, duplicateTile;
 
         public Map(Texture2D texture, int[] tileGridSize)
         {
-            this.texture = texture;
+            this.tileSet = texture;
             tileGrid = new Vector2[tileGridSize[0], tileGridSize[1]];
 
             TileSize = Main.ScreenWidth / 32;
@@ -48,7 +48,7 @@ namespace RPGame.Scipts.Core
 
                         if (number > 0)
                         {
-                            tiles.Add(new Tile(texture, number, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                            tiles.Add(new Tile(tileSet, number, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                         }
 
                         savedTiles.RemoveAt(0);
@@ -93,57 +93,57 @@ namespace RPGame.Scipts.Core
             switch (lastPressedKey)
             {
                 case Keys.V:
-                    if (!IsDuplicate(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                    if (!IsDuplicate(new Tile(tileSet, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
-                        tiles.Add(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        tiles.Add(new Tile(tileSet, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        lastChangedTile = new Tile(tileSet, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(tileSet, 1, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;
 
                 case Keys.B:
-                    if (!IsDuplicate(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                    if (!IsDuplicate(new Tile(tileSet, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
-                        tiles.Add(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        tiles.Add(new Tile(tileSet, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        lastChangedTile = new Tile(tileSet, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(tileSet, 2, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;
 
                 case Keys.N:
-                    if (!IsDuplicate(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                    if (!IsDuplicate(new Tile(tileSet, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
-                        tiles.Add(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        tiles.Add(new Tile(tileSet, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        lastChangedTile = new Tile(tileSet, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(tileSet, 3, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;
 
                 case Keys.M:
-                    if (!IsDuplicate(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
+                    if (!IsDuplicate(new Tile(tileSet, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize))))
                     {
-                        tiles.Add(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
-                        lastChangedTile = new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        tiles.Add(new Tile(tileSet, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        lastChangedTile = new Tile(tileSet, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
                     }
 
                     else
                     {
-                        ReplaceTile(new Tile(texture, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
+                        ReplaceTile(new Tile(tileSet, 4, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize)));
                     }
 
                     break;
@@ -246,8 +246,8 @@ namespace RPGame.Scipts.Core
             {
                 for (int y = 0; y < tileGrid.GetLength(1); y++)
                 {
-                    spriteBatch.Draw(texture, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize), Color.Black);
-                    spriteBatch.Draw(texture, new Rectangle(x * TileSize + 1, y * TileSize + 1, TileSize - 2, TileSize - 2), Color.CornflowerBlue);
+                    spriteBatch.Draw(tileSet, new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize), Color.Black);
+                    spriteBatch.Draw(tileSet, new Rectangle(x * TileSize + 1, y * TileSize + 1, TileSize - 2, TileSize - 2), Color.CornflowerBlue);
                 }
             }
         }

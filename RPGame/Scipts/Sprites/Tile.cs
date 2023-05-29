@@ -10,8 +10,8 @@ namespace RPGame.Scipts.Components
     {
         const int PATH = 1, GRASS = 2, TREES = 3, WATER = 4;
 
-        Texture2D texture;
-        Color color;
+        Texture2D tileSet;
+        Rectangle sourceRectangle;
         bool passable;
 
         public Rectangle Rectangle { get; set; }
@@ -20,10 +20,10 @@ namespace RPGame.Scipts.Components
 
         public int Material { get; private set; }
 
-        public Tile(Texture2D texture, int material, Rectangle rectangle)
+        public Tile(Texture2D tileSet, int material, Rectangle rectangle)
         {
             Rectangle = rectangle;
-            this.texture = texture;
+            this.tileSet = tileSet;
             Position = new Vector2(rectangle.X, rectangle.Y);
             Material = material;
             SetProperties(material);
@@ -34,22 +34,22 @@ namespace RPGame.Scipts.Components
             switch (material)
             {
                 case PATH:
-                    color = Color.SandyBrown;
+                    sourceRectangle = new Rectangle(48, 16, 16, 16);
                     passable = true;
                     break;
 
                 case GRASS:
-                    color = Color.Green;
+                    sourceRectangle = new Rectangle(128, 0, 16, 16);
                     passable = true;
                     break;
 
                 case TREES:
-                    color = Color.DarkGreen;
+                    sourceRectangle = new Rectangle(96, 0, 16, 16);
                     passable = false;
                     break;
 
                 case WATER:
-                    color = Color.Blue;
+                    sourceRectangle = new Rectangle(0, 0, 16, 16);
                     passable = false;
                     break;
             }
@@ -62,17 +62,12 @@ namespace RPGame.Scipts.Components
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Rectangle, color);
+            spriteBatch.Draw(tileSet, Rectangle, sourceRectangle, Color.White);
         }
 
         public bool GetPassability()
         {
             return passable;
-        }
-
-        public void SetColor()
-        {
-            color = Color.Red;
         }
     }
 }
