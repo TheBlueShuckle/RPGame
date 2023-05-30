@@ -46,8 +46,8 @@ namespace RPGame.Scipts.Scenes
             LoadTextures(GraphicsDevice, Content);
 
             map = new Map(Content.Load<Texture2D>("Sprites/Tileset"), new int[] { 128, 72 });
-            mapSaver = new MapSaver();
-            map.GenerateMap(mapSaver.LoadMap(FILE_NAME));
+            mapSaver = new MapSaver(FILE_NAME);
+            map.GenerateMap(mapSaver.LoadMap());
 
             camera = new Camera(GraphicsDevice.Viewport, map.MapSize);
 
@@ -109,7 +109,7 @@ namespace RPGame.Scipts.Scenes
 
             if (ks1.IsKeyDown(Keys.F1) && ks2.IsKeyUp(Keys.F1))
             {
-                mapSaver.SaveMap(FILE_NAME, map.GetTiles());
+                mapSaver.SaveMap(map.GetTiles());
             }
 
             ks2 = ks1;

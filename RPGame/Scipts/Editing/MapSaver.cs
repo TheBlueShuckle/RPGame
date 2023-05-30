@@ -1,4 +1,5 @@
-﻿using RPGame.Scipts.Components;
+﻿using Newtonsoft.Json;
+using RPGame.Scipts.Components;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
@@ -11,31 +12,28 @@ namespace RPGame.Scipts.Editing
         StreamWriter writer;
         StreamReader reader;
 
-        public MapSaver()
-        {
+        string fullPath;
 
+        public MapSaver(string fileName)
+        {
+            fullPath = Path.GetFullPath(fileName);
         }
 
-        public void SaveMap(string fileName, List<Tile> tiles)
+        public void SaveMap(List<Tile> tiles)
         {
-            string fullPath = Path.GetFullPath(fileName);
-
-            FileStream overwriteFile = File.Open(fullPath, FileMode.Create);
-
-            writer = new StreamWriter(overwriteFile);
-
-            foreach(Tile tile in tiles)
+            using (StreamWriter file = new StreamWriter(fullPath))
             {
-                writer.WriteLine(tile.Material);
+                foreach (Tile tile in tiles)
+                {
+                    file.WriteLine(JsonConvert.SerializeObject(tile));
+                }
             }
 
             writer.Close();
         }
 
-        public List<int> LoadMap(string fileName)
+        public List<int> LoadMap()
         {
-            string fullPath = Path.GetFullPath(fileName);
-
             reader = new StreamReader(fullPath);
             List<int> result = new List<int>();
 
