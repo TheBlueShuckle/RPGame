@@ -28,6 +28,7 @@ namespace RPGame.Scipts.Components
             this.tileSet = tileSet;
             Position = new Vector2(rectangle.X, rectangle.Y);
             Material = material;
+
             SetProperties(material);
         }
 
