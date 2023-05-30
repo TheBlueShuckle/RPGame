@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
@@ -13,6 +14,7 @@ namespace RPGame.Scipts.Components
         Texture2D tileSet;
         Rectangle sourceRectangle;
         bool passable;
+        Random random = new Random();
 
         public Rectangle Rectangle { get; set; }
 
@@ -39,7 +41,7 @@ namespace RPGame.Scipts.Components
                     break;
 
                 case GRASS:
-                    sourceRectangle = new Rectangle(128, 0, 16, 16);
+                    sourceRectangle = GenerateSourceRectangle();
                     passable = true;
                     break;
 
@@ -53,6 +55,19 @@ namespace RPGame.Scipts.Components
                     passable = false;
                     break;
             }
+        }
+
+        private Rectangle GenerateSourceRectangle()
+        {
+            int randomNumber = random.Next(1, 4);
+            Rectangle sourceRectangle = new Rectangle(0, 96, 16, 16);
+
+            if (randomNumber == 3)
+            {
+                sourceRectangle = new Rectangle(128 + 16 * random.Next(0, 3), 16 * random.Next(0, 5), 16, 16);
+            }
+
+            return sourceRectangle;
         }
 
         public void Update(GameTime gameTime)

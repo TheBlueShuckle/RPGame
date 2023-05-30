@@ -147,10 +147,10 @@ namespace RPGame.Scipts.Scenes
 
             spriteBatch.End();
 
-            DrawHUD(spriteBatch, tilesOnScreen);
+            DrawHUD(spriteBatch);
         }
 
-        private void DrawHUD(SpriteBatch spriteBatch, int tilesOnScreen)
+        private void DrawHUD(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
 
