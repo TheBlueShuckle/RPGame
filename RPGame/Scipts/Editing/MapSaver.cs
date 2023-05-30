@@ -8,10 +8,6 @@ namespace RPGame.Scipts.Editing
 {
     internal class MapSaver
     {
-        List<Tile> tiles = new List<Tile>();
-        StreamWriter writer;
-        StreamReader reader;
-
         string fullPath;
 
         public MapSaver(string fileName)
@@ -23,27 +19,16 @@ namespace RPGame.Scipts.Editing
         {
             using (StreamWriter file = new StreamWriter(fullPath))
             {
-                foreach (Tile tile in tiles)
-                {
-                    file.WriteLine(JsonConvert.SerializeObject(tile));
-                }
+                file.WriteLine(JsonConvert.SerializeObject(tiles));
             }
-
-            writer.Close();
         }
 
-        public List<int> LoadMap()
+        public List<Tile> LoadMap()
         {
-            reader = new StreamReader(fullPath);
-            List<int> result = new List<int>();
-
-            while(!reader.EndOfStream)
+            using (StreamReader file = new StreamReader(fullPath))
             {
-                result.Add(int.Parse(reader.ReadLine()));
+                return JsonConvert.DeserializeObject<List<Tile>>(file.ReadToEnd());
             }
-
-            reader.Close();
-            return result;
         }
     }
 }

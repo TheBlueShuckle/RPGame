@@ -17,7 +17,7 @@ namespace RPGame.Scipts.Scenes
 {
     internal class Scene1 : Scene
     {
-        const string FILE_NAME = "TileMaps\\Scene1.txt";
+        const string FILE_NAME = "TileMaps\\scene1test.json";
 
         Player player;
         Map map;
@@ -28,10 +28,8 @@ namespace RPGame.Scipts.Scenes
 
         KeyboardState ks1, ks2;
         Keys lastPressedKey;
-        Texture2D texture;
+        Texture2D texture, tileSet;
         SpriteFont font;
-        Vector2 inWorldMousePosition;
-        int tilesStartCount;
 
         private Camera camera;
 
@@ -50,8 +48,6 @@ namespace RPGame.Scipts.Scenes
             map.GenerateMap(mapSaver.LoadMap());
 
             camera = new Camera(GraphicsDevice.Viewport, map.MapSize);
-
-            tilesStartCount = map.GetTiles().Count;
 
             player = new Player(map.TileSize, map.GetImpassableTiles(), Content.Load<Texture2D>("Sprites/Player"));
             components = new List<Component>();
@@ -82,7 +78,7 @@ namespace RPGame.Scipts.Scenes
 
             if (Main.EditMode)
             {
-                map.EditMap(player.Position, lastPressedKey, camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()));
+                map.EditMap(lastPressedKey, camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()));
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 {
@@ -129,13 +125,13 @@ namespace RPGame.Scipts.Scenes
             {
                 if (!Main.EditMode && IsTileOnScreen(tile))
                 {
-                    tile.Draw(gameTime, spriteBatch);
+                    tile.Draw(gameTime, spriteBatch, tileSet);
                     tilesOnScreen++;
                 }
 
                 else if (Main.EditMode)
                 {
-                    tile.Draw(gameTime, spriteBatch);
+                    tile.Draw(gameTime, spriteBatch, tileSet);
                     tilesOnScreen++;
                 }
             }
@@ -254,6 +250,8 @@ namespace RPGame.Scipts.Scenes
         {
             texture = new Texture2D(GraphicsDevice, 1, 1);
             texture.SetData(new Color[] { Color.White });
+
+            tileSet = Content.Load<Texture2D>("Sprites/Tileset");
 
             font = Content.Load<SpriteFont>("Font/Font");
         }

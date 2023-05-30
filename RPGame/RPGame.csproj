@@ -18,6 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\net6.0-windows\TileMaps\Scene1.txt" />
+    <Content Include="bin\Debug\net6.0-windows\TileMaps\scene1test.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
