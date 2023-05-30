@@ -43,7 +43,7 @@ namespace RPGame.Scipts.Scenes
         {
             LoadTextures(GraphicsDevice, Content);
 
-            map = new Map(Content.Load<Texture2D>("Sprites/Tileset"), new int[] { 128, 72 });
+            map = new Map(texture, new int[] { 128, 72 });
             mapSaver = new MapSaver(FILE_NAME);
             map.GenerateMap(mapSaver.LoadMap());
 
