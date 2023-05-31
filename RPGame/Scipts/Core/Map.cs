@@ -128,7 +128,7 @@ namespace RPGame.Scipts.Core
         {
             foreach (Tile tile in tiles.ToList())
             {
-                if (tile.Position() == new Vector2(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT))
+                if (tile.Position() == new Vector2(x * TILE_PIXEL_COUNT * Main.Pixel, y * TILE_PIXEL_COUNT * Main.Pixel))
                 {
                     tiles.Remove(tile);
                 }
