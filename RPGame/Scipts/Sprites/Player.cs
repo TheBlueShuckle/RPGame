@@ -15,7 +15,7 @@ namespace RPGame.Scipts.Components
         List<Tile> impassableTiles;
         Rectangle spriteSize;
 
-        int tileSize;
+        float tileSize;
 
         int spriteWidth, spriteHeight;
 
@@ -23,16 +23,16 @@ namespace RPGame.Scipts.Components
 
         public override Rectangle Hitbox { get; set; }
 
-        public Player(int tileSize, List<Tile> impassableTiles, Texture2D texture)
+        public Player(float tileSize, List<Tile> impassableTiles, Texture2D texture)
         {
             this.impassableTiles = impassableTiles;
             this.texture = texture;
             this.tileSize = tileSize;
 
-            spriteWidth = texture.Width * tileSize / 16;
-            spriteHeight = texture.Height * tileSize / 16;
+            spriteWidth = (int)(texture.Width * Main.Pixel);
+            spriteHeight = (int)(texture.Height * Main.Pixel);
 
-            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(tileSize, tileSize));
+            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(16 * Main.Pixel, 16 * Main.Pixel));
 
             Position = movementHandler.Pos;
             Hitbox = movementHandler.Hitbox;
