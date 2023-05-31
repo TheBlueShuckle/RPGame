@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.MediaFoundation;
 using System;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
@@ -13,6 +14,7 @@ namespace RPGame.Scipts.Components
 
         bool passable;
         Random random = new Random();
+        Vector2 position;
 
         public Rectangle Rectangle { get; set; }
 
@@ -20,12 +22,10 @@ namespace RPGame.Scipts.Components
 
         public int Material { get; private set; }
 
-        public Vector2 Position { get; }
-
         public Tile(int material, Rectangle rectangle)
         {
             Rectangle = rectangle;
-            Position = new Vector2(rectangle.X, rectangle.Y);
+            position = new Vector2(rectangle.X * Main.Pixel, rectangle.Y * Main.Pixel);
             Material = material;
 
             SetProperties(material);
@@ -96,6 +96,11 @@ namespace RPGame.Scipts.Components
         public Rectangle ScaledRectangle()
         {
             return new Rectangle((int)(Rectangle.X * Main.Pixel), (int)(Rectangle.Y * Main.Pixel), (int)(Rectangle.Width * Main.Pixel), (int)(Rectangle.Height * Main.Pixel));
+        }
+
+        public Vector2 Position()
+        {
+            return position;
         }
     }
 }

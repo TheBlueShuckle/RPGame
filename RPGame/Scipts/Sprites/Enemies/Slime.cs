@@ -25,7 +25,7 @@ namespace RPGame.Scipts.Sprites.Enemies
 
         public override Rectangle Hitbox { get; set; }
 
-        public Slime(int tileSize, Vector2 pos, Texture2D texture)
+        public Slime(float tileSize, Vector2 pos, Texture2D texture)
         {
             Position = pos;
             this.texture = texture;
