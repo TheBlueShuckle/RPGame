@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
-using SharpDX.Direct3D9;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -72,7 +70,7 @@ namespace RPGame.Scipts.Core
         {
             switch (lastPressedKey)
             {
-                case Keys.V:
+                case Keys.D1:
                     if (!IsDuplicate(new Tile(1, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT))))
                     {
                         tiles.Add(lastChangedTile = new Tile(1, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT)));
@@ -85,7 +83,7 @@ namespace RPGame.Scipts.Core
 
                     break;
 
-                case Keys.B:
+                case Keys.D2:
                     if (!IsDuplicate(new Tile(2, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT))))
                     {
                         tiles.Add(lastChangedTile = new Tile(2, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT)));
@@ -98,7 +96,7 @@ namespace RPGame.Scipts.Core
 
                     break;
 
-                case Keys.N:
+                case Keys.D3:
                     if (!IsDuplicate(new Tile(3, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT))))
                     {
                         tiles.Add(lastChangedTile = new Tile(3, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT)));
@@ -111,7 +109,7 @@ namespace RPGame.Scipts.Core
 
                     break;
 
-                case Keys.M:
+                case Keys.D4:
                     if (!IsDuplicate(new Tile(4, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT))))
                     {
                          tiles.Add(lastChangedTile = new Tile(4, new Rectangle(x * TILE_PIXEL_COUNT, y * TILE_PIXEL_COUNT, TILE_PIXEL_COUNT, TILE_PIXEL_COUNT)));

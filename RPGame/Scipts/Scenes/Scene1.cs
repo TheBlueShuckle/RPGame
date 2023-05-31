@@ -8,10 +8,6 @@ using RPGame.Scipts.Sprites.Enemies;
 using RPGame.Scipts.Editing;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Reflection.Metadata;
-using System.ComponentModel;
-using System.Diagnostics;
 
 namespace RPGame.Scipts.Scenes
 {
