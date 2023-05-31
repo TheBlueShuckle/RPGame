@@ -13,7 +13,7 @@ namespace RPGame.Scipts.Scenes
 {
     internal class Scene1 : Scene
     {
-        const string FILE_NAME = "TileMaps\\scene1test.json";
+        const string FILE_NAME = "TileMaps\\scene1.json";
 
         Player player;
         Map map;
