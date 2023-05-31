@@ -18,9 +18,9 @@ namespace RPGame.Scipts.Components
 
         public Rectangle SourceRectangle { get; set; }
 
-        public Vector2 Position { get; set; }
-
         public int Material { get; private set; }
+
+        public Vector2 Position { get; }
 
         public Tile(int material, Rectangle rectangle)
         {
@@ -83,19 +83,19 @@ namespace RPGame.Scipts.Components
             return sourceRectangle;
         }
 
-        public void Update(GameTime gameTime)
-        {
-
-        }
-
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D tileSet)
         {
-            spriteBatch.Draw(tileSet, Rectangle, SourceRectangle, Color.White);
+            spriteBatch.Draw(tileSet, ScaledRectangle(), SourceRectangle, Color.White);
         }
 
         public bool GetPassability()
         {
             return passable;
+        }
+
+        public Rectangle ScaledRectangle()
+        {
+            return new Rectangle((int)(Rectangle.X * Main.Pixel), (int)(Rectangle.Y * Main.Pixel), (int)(Rectangle.Width * Main.Pixel), (int)(Rectangle.Height * Main.Pixel));
         }
     }
 }

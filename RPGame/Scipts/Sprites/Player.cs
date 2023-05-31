@@ -29,10 +29,10 @@ namespace RPGame.Scipts.Components
             this.texture = texture;
             this.tileSize = tileSize;
 
-            spriteWidth = texture.Width * tileSize / 16;
-            spriteHeight = texture.Height * tileSize / 16;
+            spriteWidth = (int)(texture.Width * Main.Pixel);
+            spriteHeight = (int)(texture.Height * Main.Pixel);
 
-            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(tileSize, tileSize));
+            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(16 * Main.Pixel, 16 * Main.Pixel));
 
             Position = movementHandler.Pos;
             Hitbox = movementHandler.Hitbox;

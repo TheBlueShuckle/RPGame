@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using RPGame.Scipts.Handlers;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace RPGame.Scipts.Sprites.Enemies
     internal class Slime : Enemy
     {
         Texture2D texture;
-        Vector2 size = new Vector2(Main.ScreenWidth / 48, Main.ScreenWidth / 48);
+        Vector2 size = new Vector2(10 * Main.Pixel, 10 * Main.Pixel);
 
         EnemyMovementHandler enemyMovementHandler;
 
@@ -31,7 +32,7 @@ namespace RPGame.Scipts.Sprites.Enemies
 
             enemyMovementHandler = new EnemyMovementHandler(tileSize * 2, pos, size);
 
-            Hitbox = new Rectangle(pos.ToPoint(), new Point(30, 30));
+            Hitbox = new Rectangle(pos.ToPoint(), new Point(10, 10));
         }
 
         public override void Update(GameTime gameTime)

@@ -17,6 +17,7 @@ namespace RPGame.Scipts
 
         public static int ScreenWidth;
         public static int ScreenHeight;
+        public static float Pixel;
 
         public static SpriteFont Font { get; set; }
         public static bool EditMode { get; set; }
@@ -45,6 +46,8 @@ namespace RPGame.Scipts
 
             ScreenWidth = graphics.PreferredBackBufferWidth;
             ScreenHeight = graphics.PreferredBackBufferHeight;
+
+            Pixel = (float)ScreenWidth / 512;
 
             base.Initialize();
         }
