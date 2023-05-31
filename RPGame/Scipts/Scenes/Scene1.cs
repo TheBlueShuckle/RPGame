@@ -146,7 +146,7 @@ namespace RPGame.Scipts.Scenes
         {
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "" + lastPressedKey, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + map.GetTiles().Count, Vector2.Zero, Color.Black);
             spriteBatch.DrawString(font, "" + camera.Zoom, new Vector2(0, 100), Color.Black);
 
             spriteBatch.End();

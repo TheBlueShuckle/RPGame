@@ -74,7 +74,7 @@ namespace RPGame.Scipts.Components
 
             if (randomNumber == 3)
             {
-                sourceRectangle = new Rectangle(128 + 16 * random.Next(0, 3), 16 * random.Next(0, 5), 16, 16);
+                sourceRectangle = new Rectangle(112 + (16 * random.Next(0, 3)), 16 * random.Next(0, 5), 16, 16);
             }
 
             return sourceRectangle;
