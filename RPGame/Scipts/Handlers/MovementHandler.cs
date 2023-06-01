@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
-using System;
 using System.Collections.Generic;
-using System.Transactions;
-using System.Xml.Serialization;
 
 namespace RPGame.Scipts.Handlers
 {
@@ -55,7 +51,15 @@ namespace RPGame.Scipts.Handlers
 
                 else
                 {
-                    velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (velocity.Y < -speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.Y += -speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 25;
+                    }
+
+                    if (velocity.Y >= -speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    }
                 }
 
                 if (Main.EditMode == OF)
@@ -80,7 +84,15 @@ namespace RPGame.Scipts.Handlers
 
                 else
                 {
-                    velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (velocity.Y > speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 25;
+                    }
+
+                    if (velocity.Y <= speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    }
                 }
 
                 if (Main.EditMode == OF)
@@ -91,7 +103,25 @@ namespace RPGame.Scipts.Handlers
 
             else
             {
-                velocity.Y = 0;
+                if (velocity.Y > 0)
+                {
+                    velocity.Y -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 3;
+
+                    if (velocity.Y < 0)
+                    {
+                        velocity.Y = 0;
+                    }
+                }
+
+                if (velocity.Y < 0)
+                {
+                    velocity.Y += speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 3;
+
+                    if (velocity.Y > 0)
+                    {
+                        velocity.Y = 0;
+                    }
+                }
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A) && !Keyboard.GetState().IsKeyDown(Keys.D) && (!CollidingLeft(Hitbox, impassableTiles) || Main.EditMode))
@@ -102,7 +132,7 @@ namespace RPGame.Scipts.Handlers
                 {
                     velocity.X += (RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
 
-                    if(velocity.X <= RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
+                    if (velocity.X <= RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
                     {
                         velocity.X = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                     }
@@ -110,7 +140,15 @@ namespace RPGame.Scipts.Handlers
 
                 else
                 {
-                    velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (velocity.X < -speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.X += -speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 25;
+                    }
+
+                    if (velocity.X >= -speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    }
                 }
 
                 if (Main.EditMode == OF)
@@ -135,7 +173,15 @@ namespace RPGame.Scipts.Handlers
 
                 else
                 {
-                    velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (velocity.X > speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 25;
+                    }
+
+                    if (velocity.X <= speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
+                    {
+                        velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    }
                 }
 
                 if (Main.EditMode == OF)
@@ -146,7 +192,25 @@ namespace RPGame.Scipts.Handlers
 
             else
             {
-                velocity.X = 0;
+                if (velocity.X > 0)
+                {
+                    velocity.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 3;
+
+                    if (velocity.X < 0)
+                    {
+                        velocity.X = 0;
+                    }
+                }
+
+                if (velocity.X < 0)
+                {
+                    velocity.X += speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 3;
+
+                    if (velocity.X > 0)
+                    {
+                        velocity.X = 0;
+                    }
+                }
             }
         }
 

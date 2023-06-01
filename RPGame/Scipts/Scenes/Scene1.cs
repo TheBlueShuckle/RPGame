@@ -181,6 +181,16 @@ namespace RPGame.Scipts.Scenes
                     camera.Zoom = 1;
                 }
             }
+
+            else if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 1)
+            {
+                camera.Zoom -= 0.01f;
+
+                if (camera.Zoom < 1)
+                {
+                    camera.Zoom = 1;
+                }
+            }
         }
 
         private void SaveMap()
