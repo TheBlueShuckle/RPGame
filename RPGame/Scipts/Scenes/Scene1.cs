@@ -156,15 +156,6 @@ namespace RPGame.Scipts.Scenes
                  Keyboard.GetState().IsKeyDown(Keys.D)))
             {
                 camera.Zoom -= 0.01f;
-            }
-
-            else if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8 &&
-                (Keyboard.GetState().IsKeyDown(Keys.W) ||
-                 Keyboard.GetState().IsKeyDown(Keys.A) ||
-                 Keyboard.GetState().IsKeyDown(Keys.S) ||
-                 Keyboard.GetState().IsKeyDown(Keys.D)))
-            {
-                camera.Zoom -= 0.01f;
 
                 if (camera.Zoom < 0.8)
                 {
@@ -172,7 +163,11 @@ namespace RPGame.Scipts.Scenes
                 }
             }
 
-            else if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom < 1)
+            else if (!Keyboard.GetState().IsKeyDown(Keys.W) &&
+                     !Keyboard.GetState().IsKeyDown(Keys.A) &&
+                     !Keyboard.GetState().IsKeyDown(Keys.S) &&
+                     !Keyboard.GetState().IsKeyDown(Keys.D) &&
+                     camera.Zoom < 1)
             {
                 camera.Zoom += 0.01f;
 

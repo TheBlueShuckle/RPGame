@@ -130,7 +130,7 @@ namespace RPGame.Scipts.Handlers
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X += (RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
+                    velocity.X += (RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 10;
 
                     if (velocity.X <= RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
                     {
@@ -142,7 +142,7 @@ namespace RPGame.Scipts.Handlers
                 {
                     if (velocity.X < -speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
                     {
-                        velocity.X += -speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 25;
+                        velocity.X += -speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 10;
                     }
 
                     if (velocity.X >= -speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
@@ -163,7 +163,7 @@ namespace RPGame.Scipts.Handlers
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X += (RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
+                    velocity.X += (RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 10;
 
                     if (velocity.X >= RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
                     {
@@ -175,7 +175,7 @@ namespace RPGame.Scipts.Handlers
                 {
                     if (velocity.X > speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
                     {
-                        velocity.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 25;
+                        velocity.X -= speed * (float)gameTime.ElapsedGameTime.TotalSeconds / 10;
                     }
 
                     if (velocity.X <= speed * (float)gameTime.ElapsedGameTime.TotalSeconds)
