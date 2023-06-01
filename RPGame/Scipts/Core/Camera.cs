@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using RPGame.Scipts.Components;
 using SharpDX.Direct2D1.Effects;
+using System.IO.Packaging;
 using System.Security.Permissions;
 
 namespace RPGame.Scipts.Core
@@ -46,24 +47,24 @@ namespace RPGame.Scipts.Core
             x = -centre.X;
             y = -centre.Y;
 
-            if (position.X < border.X + (Main.ScreenWidth / 2) && !Main.EditMode)
+            if (position.X < (border.X + (Main.ScreenWidth / 2)) / zoom && !Main.EditMode)
             {
-                x = -Main.ScreenWidth / 2;
+                x = (-Main.ScreenWidth / 2) / zoom;
             }
 
-            if (position.X > border.Right - (Main.ScreenWidth / 2) && !Main.EditMode)
+            if (position.X > border.Right - (Main.ScreenWidth / 2 / zoom) && !Main.EditMode)
             {
-                x = -border.Right + Main.ScreenWidth / 2;
+                x = -border.Right + (Main.ScreenWidth / 2 / zoom);
             }
 
-            if (position.Y < border.Y + (Main.ScreenHeight / 2) && !Main.EditMode)
+            if (position.Y < (border.Y + (Main.ScreenHeight / 2)) / zoom && !Main.EditMode)
             {
-                y = -Main.ScreenHeight / 2;
+                y = (-Main.ScreenHeight / 2) / zoom;
             }
 
-            if (position.Y > border.Bottom - (Main.ScreenHeight / 2) && !Main.EditMode)
+            if (position.Y > border.Bottom - (Main.ScreenHeight / 2 / zoom) && !Main.EditMode)
             {
-                y = -border.Bottom + Main.ScreenHeight / 2;
+                y = -border.Bottom + (Main.ScreenHeight / 2 / zoom);
             }
 
             newCentre = Matrix.CreateTranslation(x, y, 0);

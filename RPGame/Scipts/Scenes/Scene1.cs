@@ -8,6 +8,8 @@ using RPGame.Scipts.Sprites.Enemies;
 using RPGame.Scipts.Editing;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.IO.Packaging;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -26,6 +28,8 @@ namespace RPGame.Scipts.Scenes
         Keys lastPressedKey;
         Texture2D texture, tileSet;
         SpriteFont font;
+
+        int tilesOnScreen = 0;
 
         private Camera camera;
 
@@ -89,7 +93,30 @@ namespace RPGame.Scipts.Scenes
 
             else
             {
-                camera.Zoom = 1;
+                if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
+                {
+                    camera.Zoom -= 0.01f;
+                }
+
+                else if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
+                {
+                    camera.Zoom -= 0.01f;
+
+                    if (camera.Zoom < 0.8)
+                    {
+                        camera.Zoom = 0.8f;
+                    }
+                }
+
+                else if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom < 1)
+                {
+                    camera.Zoom += 0.01f;
+
+                    if (camera.Zoom > 1)
+                    {
+                        camera.Zoom = 1;
+                    }
+                }
             }
 
             foreach (Component component in components)
@@ -111,7 +138,7 @@ namespace RPGame.Scipts.Scenes
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            int tilesOnScreen = 0;
+            tilesOnScreen = 0;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
 
@@ -119,17 +146,17 @@ namespace RPGame.Scipts.Scenes
 
             foreach (Tile tile in map.GetTiles())
             {
-                if (!Main.EditMode && IsTileOnScreen(tile))
+                if (/*!Main.EditMode && */IsTileOnScreen(tile))
                 {
                     tile.Draw(gameTime, spriteBatch, tileSet);
                     tilesOnScreen++;
                 }
 
-                else if (Main.EditMode)
+                /*else if (Main.EditMode)
                 {
                     tile.Draw(gameTime, spriteBatch, tileSet);
                     tilesOnScreen++;
-                }
+                }*/
             }
 
             foreach (Component component in components)
@@ -146,7 +173,7 @@ namespace RPGame.Scipts.Scenes
         {
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "" + map.GetTiles().Count, Vector2.Zero, Color.Black);
+            spriteBatch.DrawString(font, "" + tilesOnScreen, Vector2.Zero, Color.Black);
             spriteBatch.DrawString(font, "" + camera.Zoom, new Vector2(0, 100), Color.Black);
 
             spriteBatch.End();
@@ -156,85 +183,86 @@ namespace RPGame.Scipts.Scenes
         {
             bool isOnScreen = false;
 
+
             if (
-                tile.ScaledRectangle().X + map.TileSize >= player.GetCenter().X - (Main.ScreenWidth / 2) &&
-                tile.ScaledRectangle().Right - map.TileSize <= player.GetCenter().X + (Main.ScreenWidth / 2) &&
-                tile.ScaledRectangle().Y + map.TileSize >= player.GetCenter().Y - (Main.ScreenHeight / 2) &&
-                tile.ScaledRectangle().Bottom - map.TileSize <= player.GetCenter().Y + (Main.ScreenHeight / 2))
+                tile.ScaledRectangle().X + map.TileSize >= player.GetCenter().X - (Main.ScreenWidth / 2 / camera.Zoom) &&
+                tile.ScaledRectangle().Right - map.TileSize <= player.GetCenter().X + (Main.ScreenWidth / 2 / camera.Zoom) &&
+                tile.ScaledRectangle().Y + map.TileSize >= player.GetCenter().Y - (Main.ScreenHeight / 2 / camera.Zoom) &&
+                tile.ScaledRectangle().Bottom - map.TileSize <= player.GetCenter().Y + (Main.ScreenHeight / 2 / camera.Zoom))
             {
                 isOnScreen = true;
             }
 
             if (
                 // if component.X is in range 
-                player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                tile.ScaledRectangle().Right - map.TileSize < Main.ScreenWidth &&
+                player.Position.X < Main.ScreenWidth / 2 / camera.Zoom &&
+                tile.ScaledRectangle().Right - map.TileSize < Main.ScreenWidth / camera.Zoom &&
                   // if camera sees top of screen and component.Y is in range
-                ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  tile.Position().Y - map.TileSize < Main.ScreenHeight) ||
+                ((player.Position.Y < Main.ScreenHeight / 2 / camera.Zoom &&
+                  tile.Position().Y - map.TileSize < Main.ScreenHeight / camera.Zoom) ||
                  // else if camera sees bottom of screen and component.Y is in range
-                 (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  tile.Position().Y + map.TileSize > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                 (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2 / camera.Zoom) &&
+                  tile.Position().Y + map.TileSize > (map.MapSize.Bottom - Main.ScreenHeight) / camera.Zoom) ||
                  // else if camera sees neither the bottom or the top and component.Y is in range
-                 (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  tile.Position().Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2) &&
-                  tile.Position().Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2))))
+                 (player.Position.Y > Main.ScreenHeight / 2 / camera.Zoom &&
+                  player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2 / camera.Zoom) &&
+                  tile.Position().Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2 / camera.Zoom) &&
+                  tile.Position().Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2 / camera.Zoom))))
             {
                 isOnScreen = true;
             }
 
             if (
-                player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                tile.ScaledRectangle().X + map.TileSize > map.MapSize.Right - Main.ScreenWidth &&
+                player.Position.X > (map.MapSize.Right - (Main.ScreenWidth / 2) / camera.Zoom) &&
+                tile.ScaledRectangle().X + map.TileSize > map.MapSize.Right - (Main.ScreenWidth / camera.Zoom) &&
                   // if camera sees top of screen and component.Y is in range
-                ((player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  tile.Position().Y - map.TileSize < Main.ScreenHeight) ||
+                (player.Position.Y < Main.ScreenHeight / 2 / camera.Zoom &&
+                  tile.Position().Y - map.TileSize < Main.ScreenHeight / camera.Zoom ||
                   // else if camera sees bottom of screen and component.Y is in range
-                 (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  tile.Position().Y + map.TileSize > map.MapSize.Bottom - (Main.ScreenHeight)) ||
+                 (player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2 / camera.Zoom) &&
+                  tile.Position().Y + map.TileSize > (map.MapSize.Bottom - (Main.ScreenHeight)) / camera.Zoom) ||
                   // else if camera sees neither the bottom or the top and component.Y is in range
-                 (player.Position.Y > map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                  player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                  tile.Position().Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2) &&
-                  tile.Position().Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2))))
+                 (player.Position.Y > Main.ScreenHeight / 2 / camera.Zoom &&
+                  player.Position.Y < map.MapSize.Bottom - (Main.ScreenHeight / 2 / camera.Zoom) &&
+                  tile.Position().Y - map.TileSize < player.Position.Y + (Main.ScreenHeight / 2 / camera.Zoom) &&
+                  tile.Position().Y + map.TileSize > player.Position.Y - (Main.ScreenHeight / 2 / camera.Zoom))))
 
             {
                 isOnScreen = true;
             }
             
             if (
-                player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) &&
-                tile.ScaledRectangle().Bottom - map.TileSize < Main.ScreenHeight &&                   
+                player.Position.Y < map.MapSize.Y + (Main.ScreenHeight / 2) / camera.Zoom &&
+                tile.ScaledRectangle().Bottom - map.TileSize < Main.ScreenHeight / camera.Zoom &&                   
                   // if camera sees left of screen and component.X is in range
-                ((player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                  tile.Position().X - map.TileSize < Main.ScreenWidth) ||
+                ((player.Position.X < Main.ScreenWidth / 2 / camera.Zoom &&
+                  tile.Position().X - map.TileSize < Main.ScreenWidth / camera.Zoom) ||
                  // else if camera sees right of screen and component.X is in range
-                 (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  tile.Position().X + map.TileSize > map.MapSize.Right - (Main.ScreenWidth)) ||
+                 (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2 / camera.Zoom) &&
+                  tile.Position().X + map.TileSize > (map.MapSize.Right - (Main.ScreenWidth)) / camera.Zoom) ||
                  // else if camera sees neither the bottom or the top and component.X is in range
-                 (player.Position.X > map.MapSize.X + (Main.ScreenWidth / 2) &&
-                  player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  tile.Position().X - map.TileSize < player.Position.X + (Main.ScreenWidth / 2) &&
-                  tile.Position().X + map.TileSize > player.Position.X - (Main.ScreenWidth / 2))))
+                 (player.Position.X > Main.ScreenWidth / 2 / camera.Zoom &&
+                  player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2 / camera.Zoom) &&
+                  tile.Position().X - map.TileSize < player.Position.X + (Main.ScreenWidth / 2 / camera.Zoom) &&
+                  tile.Position().X + map.TileSize > player.Position.X - (Main.ScreenWidth / 2 / camera.Zoom))))
             {
                 isOnScreen = true;
             }
 
             if (
-                player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) &&
-                tile.ScaledRectangle().Y + map.TileSize > map.MapSize.Bottom - Main.ScreenHeight && 
+                player.Position.Y > map.MapSize.Bottom - (Main.ScreenHeight / 2) / camera.Zoom &&
+                tile.ScaledRectangle().Y + map.TileSize > map.MapSize.Bottom - (Main.ScreenHeight / camera.Zoom) && 
                  // if camera sees left of screen and component.X is in range
-                ((player.Position.X < map.MapSize.X + (Main.ScreenWidth / 2) &&
-                  tile.Position().X - map.TileSize < Main.ScreenWidth) ||
+                ((player.Position.X < Main.ScreenWidth / 2 / camera.Zoom &&
+                  tile.Position().X - map.TileSize < Main.ScreenWidth / camera.Zoom) ||
                  // else if camera sees right of screen and component.X is in range
-                 (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  tile.Position().X + map.TileSize > map.MapSize.Right - (Main.ScreenWidth)) ||
+                 (player.Position.X > map.MapSize.Right - (Main.ScreenWidth / 2 / camera.Zoom) &&
+                  tile.Position().X + map.TileSize > (map.MapSize.Right - (Main.ScreenWidth) / camera.Zoom)) ||
                  // else if camera sees neither the bottom or the top and component.X is in range
-                 (player.Position.X > map.MapSize.X + (Main.ScreenWidth / 2) &&
-                  player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2) &&
-                  tile.Position().X - map.TileSize < player.Position.X + (Main.ScreenWidth / 2) &&
-                  tile.Position().X + map.TileSize > player.Position.X - (Main.ScreenWidth / 2))))
+                 (player.Position.X > Main.ScreenWidth / 2 / camera.Zoom &&
+                  player.Position.X < map.MapSize.Right - (Main.ScreenWidth / 2 / camera.Zoom) &&
+                  tile.Position().X - map.TileSize < player.Position.X + (Main.ScreenWidth / 2 / camera.Zoom) &&
+                  tile.Position().X + map.TileSize > player.Position.X - (Main.ScreenWidth / 2 / camera.Zoom))))
             {
                 isOnScreen = true;
             }
