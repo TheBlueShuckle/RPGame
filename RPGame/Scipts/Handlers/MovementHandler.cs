@@ -41,11 +41,21 @@ namespace RPGame.Scipts.Handlers
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.S) && (!CollidingUp(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.W;
-                velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.Y = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.Y += (RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
+
+                    if (velocity.Y <= RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
+                    {
+                        velocity.Y = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+                    }
+                }
+
+                else
+                {
+                    velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -57,11 +67,20 @@ namespace RPGame.Scipts.Handlers
             else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.LeftControl) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.S;
-                velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.Y = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.Y += (RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
+
+                    if (velocity.Y >= RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
+                    {
+                        velocity.Y = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                }
+
+                else
+                {
+                    velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -78,11 +97,20 @@ namespace RPGame.Scipts.Handlers
             if (Keyboard.GetState().IsKeyDown(Keys.A) && !Keyboard.GetState().IsKeyDown(Keys.D) && (!CollidingLeft(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.A;
-                velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.X += (RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
+
+                    if(velocity.X <= RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
+                    {
+                        velocity.X = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                }
+
+                else
+                {
+                    velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -94,11 +122,20 @@ namespace RPGame.Scipts.Handlers
             else if (Keyboard.GetState().IsKeyDown(Keys.D) && !Keyboard.GetState().IsKeyDown(Keys.A) && (!CollidingRight(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.D;
-                velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.X += (RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds)) / 25;
+
+                    if (velocity.X >= RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds))
+                    {
+                        velocity.X = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                }
+
+                else
+                {
+                    velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)

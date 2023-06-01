@@ -1,17 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
 using RPGame.Scipts.Components;
 using RPGame.Scipts.Core;
-using RPGame.Scipts.Sprites.Enemies;
 using RPGame.Scipts.Editing;
+using RPGame.Scipts.Handlers;
+using RPGame.Scipts.Sprites.Enemies;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.IO.Packaging;
-using RPGame.Scipts.Handlers;
-using System;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -152,12 +149,20 @@ namespace RPGame.Scipts.Scenes
 
         private void ZoomOutOnRun()
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8 &&
+                (Keyboard.GetState().IsKeyDown(Keys.W) ||
+                 Keyboard.GetState().IsKeyDown(Keys.A)||
+                 Keyboard.GetState().IsKeyDown(Keys.S)||
+                 Keyboard.GetState().IsKeyDown(Keys.D)))
             {
                 camera.Zoom -= 0.01f;
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
+            else if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8 &&
+                (Keyboard.GetState().IsKeyDown(Keys.W) ||
+                 Keyboard.GetState().IsKeyDown(Keys.A) ||
+                 Keyboard.GetState().IsKeyDown(Keys.S) ||
+                 Keyboard.GetState().IsKeyDown(Keys.D)))
             {
                 camera.Zoom -= 0.01f;
 
