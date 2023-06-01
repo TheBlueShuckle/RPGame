@@ -24,7 +24,8 @@ namespace RPGame.Scipts
 
         Texture2D texture;
 
-        KeyboardState ks1, ks2;
+        KeyboardState ks1, ks2, sceneks1, sceneks2;
+        int currentScene = 0;
 
         public Main()
         {
@@ -61,7 +62,7 @@ namespace RPGame.Scipts
 
             Font = Content.Load<SpriteFont>("Font/Font");
 
-            foreach (Scene1 scene in sceneHandler.GetScenes)
+            foreach (Scene scene in sceneHandler.GetScenes)
             {
                 scene.LoadContent(GraphicsDevice, Content);
             }
@@ -74,7 +75,9 @@ namespace RPGame.Scipts
 
             ToggleEditMode();
 
-            sceneHandler.GetCurrentScene().Update(gameTime);
+            ChangeScene();
+
+            sceneHandler.GetCurrentScene(currentScene).Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -83,7 +86,7 @@ namespace RPGame.Scipts
         {
             GraphicsDevice.Clear(Color.Black);
 
-            sceneHandler.GetCurrentScene().Draw(gameTime, spriteBatch);
+            sceneHandler.GetCurrentScene(currentScene).Draw(gameTime, spriteBatch);
 
             spriteBatch.Begin();
 
@@ -107,6 +110,23 @@ namespace RPGame.Scipts
             }
 
             ks2 = ks1;
+        }
+
+        private void ChangeScene()
+        {
+            sceneks1 = Keyboard.GetState();
+
+            if (sceneks1.IsKeyDown(Keys.F12) && sceneks2.IsKeyUp(Keys.F12))
+            {
+                currentScene += 1;
+
+                if (currentScene > sceneHandler.GetScenes.Count - 1)
+                {
+                    currentScene = 0;
+                }
+            }
+
+            sceneks2 = sceneks1;
         }
 
         private void DrawCrosshair()

@@ -15,11 +15,12 @@ namespace RPGame.Scipts.Handlers
         public SceneHandler()
         {
             scenes.Add(new Scene1());
+            scenes.Add(new Scene2());
         }
 
-        public Scene GetCurrentScene()
+        public Scene GetCurrentScene(int index)
         {
-            return scenes[0];
+            return scenes[index];
         }
     }
 }

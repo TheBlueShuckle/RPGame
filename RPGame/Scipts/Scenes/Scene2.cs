@@ -6,44 +6,44 @@ using RPGame.Scipts.Components;
 using RPGame.Scipts.Core;
 using RPGame.Scipts.Editing;
 using RPGame.Scipts.Handlers;
-using RPGame.Scipts.Sprites.Enemies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RPGame.Scipts.Scenes
 {
-    internal class Scene1 : Scene
+    internal class Scene2 : Scene
     {
-        const string FILE_NAME = "TileMaps\\scene1.json";
+        const string FILE_NAME = "TileMaps\\scene2.json";
 
         Player player;
         Map map;
         MapSaver mapSaver;
         TileRenderer tileRenderer;
 
-        List<Enemy> enemies = new List<Enemy>();
         List<Component> components;
 
-        KeyboardState ks1, ks2;
-        Keys lastPressedKey;
         Texture2D texture, tileSet;
         SpriteFont font;
 
-        int tilesOnScreen = 0;
-
         Camera camera;
 
+        int tilesOnScreen;
+        Keys lastPressedKey;
+        KeyboardState ks1, ks2;
 
-        public Scene1() : base()
+        public Scene2() : base()
         {
-
+            
         }
 
         public override void LoadContent(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
             LoadTextures(GraphicsDevice, Content);
 
-            map = new Map(texture, new int[] { 128, 72 });
+            map = new Map(texture, new int[] { 64, 128 });
             mapSaver = new MapSaver(FILE_NAME);
             map.GenerateMap(mapSaver.LoadMap());
 
@@ -52,13 +52,6 @@ namespace RPGame.Scipts.Scenes
 
             player = new Player(map.TileSize, map.GetImpassableTiles(), Content.Load<Texture2D>("Sprites/Player"));
             components = new List<Component>();
-
-            enemies.Add(new Slime(map.TileSize, new Vector2(map.TileSize, map.TileSize), texture));
-
-            foreach (Enemy enemy in enemies)
-            {
-                components.Add(enemy);
-            }
 
             components.Add(player);
         }
@@ -224,6 +217,5 @@ namespace RPGame.Scipts.Scenes
 
             spriteBatch.End();
         }
-
     }
 }
