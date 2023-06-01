@@ -81,7 +81,7 @@ namespace RPGame.Scipts
         
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             sceneHandler.GetCurrentScene().Draw(gameTime, spriteBatch);
 

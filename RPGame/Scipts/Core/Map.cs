@@ -220,8 +220,8 @@ namespace RPGame.Scipts.Core
             {
                 for (int y = 0; y < tileGrid.GetLength(1); y++)
                 {
-                    spriteBatch.Draw(texture, new Rectangle((int)(x * TileSize), (int)(y * TileSize), (int)TileSize, (int)TileSize), Color.Black);
-                    spriteBatch.Draw(texture, new Rectangle((int)(x * TileSize + 1), (int)(y * TileSize + 1), (int)TileSize - 2, (int)TileSize - 2), Color.CornflowerBlue);
+                    spriteBatch.Draw(texture, new Rectangle((int)(x * TileSize), (int)(y * TileSize), (int)TileSize, (int)TileSize), Color.White);
+                    spriteBatch.Draw(texture, new Rectangle((int)(x * TileSize + 1), (int)(y * TileSize + 1), (int)TileSize - 2, (int)TileSize - 2), Color.Black);
                 }
             }
         }
