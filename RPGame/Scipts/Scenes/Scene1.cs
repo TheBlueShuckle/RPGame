@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.IO.Packaging;
 using RPGame.Scipts.Handlers;
+using System;
 
 namespace RPGame.Scipts.Scenes
 {
@@ -67,17 +68,7 @@ namespace RPGame.Scipts.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().GetPressedKeys().Count() != 0 &&
-                !Keyboard.GetState().IsKeyDown(Keys.W) &&
-                !Keyboard.GetState().IsKeyDown(Keys.A) &&
-                !Keyboard.GetState().IsKeyDown(Keys.S) &&
-                !Keyboard.GetState().IsKeyDown(Keys.D) &&
-                !Keyboard.GetState().IsKeyDown(Keys.LeftShift) &&
-                !Keyboard.GetState().IsKeyDown(Keys.Up) &&
-                !Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                lastPressedKey = Keyboard.GetState().GetPressedKeys()[0];
-            }
+            SetLastPressedKey();
 
             if (Main.EditMode)
             {
@@ -96,30 +87,7 @@ namespace RPGame.Scipts.Scenes
 
             else
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
-                {
-                    camera.Zoom -= 0.01f;
-                }
-
-                else if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
-                {
-                    camera.Zoom -= 0.01f;
-
-                    if (camera.Zoom < 0.8)
-                    {
-                        camera.Zoom = 0.8f;
-                    }
-                }
-
-                else if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom < 1)
-                {
-                    camera.Zoom += 0.01f;
-
-                    if (camera.Zoom > 1)
-                    {
-                        camera.Zoom = 1;
-                    }
-                }
+                ZoomOutOnRun();
             }
 
             foreach (Component component in components)
@@ -127,14 +95,7 @@ namespace RPGame.Scipts.Scenes
                 component.Update(gameTime);
             }
 
-            ks1 = Keyboard.GetState();
-
-            if (ks1.IsKeyDown(Keys.F1) && ks2.IsKeyUp(Keys.F1))
-            {
-                mapSaver.SaveMap(map.GetTiles());
-            }
-
-            ks2 = ks1;
+            SaveMap();
 
             camera.Update(player.GetCenter().ToVector2());
         }
@@ -146,20 +107,8 @@ namespace RPGame.Scipts.Scenes
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, camera.Transform);
 
             map.Draw(spriteBatch);
-
-            foreach (Tile tile in map.GetTiles())
-            {
-                if (tileRenderer.IsTileOnScreen(tile, player.Position, player.GetCenter(), camera.Zoom))
-                {
-                    tile.Draw(gameTime, spriteBatch, tileSet);
-                    tilesOnScreen++;
-                }
-            }
-
-            foreach (Component component in components)
-            {
-                component.Draw(gameTime, spriteBatch);
-            }
+            DrawTiles(gameTime, spriteBatch);
+            DrawComponents(gameTime, spriteBatch);
 
             spriteBatch.End();
 
@@ -184,6 +133,81 @@ namespace RPGame.Scipts.Scenes
             tileSet = Content.Load<Texture2D>("Sprites/Tileset");
 
             font = Content.Load<SpriteFont>("Font/Font");
+        }
+
+        private void SetLastPressedKey()
+        {
+            if (Keyboard.GetState().GetPressedKeys().Count() != 0 &&
+                !Keyboard.GetState().IsKeyDown(Keys.W) &&
+                !Keyboard.GetState().IsKeyDown(Keys.A) &&
+                !Keyboard.GetState().IsKeyDown(Keys.S) &&
+                !Keyboard.GetState().IsKeyDown(Keys.D) &&
+                !Keyboard.GetState().IsKeyDown(Keys.LeftShift) &&
+                !Keyboard.GetState().IsKeyDown(Keys.Up) &&
+                !Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                lastPressedKey = Keyboard.GetState().GetPressedKeys()[0];
+            }
+        }
+
+        private void ZoomOutOnRun()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
+            {
+                camera.Zoom -= 0.01f;
+            }
+
+            else if (Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom > 0.8)
+            {
+                camera.Zoom -= 0.01f;
+
+                if (camera.Zoom < 0.8)
+                {
+                    camera.Zoom = 0.8f;
+                }
+            }
+
+            else if (!Keyboard.GetState().IsKeyDown(Keys.LeftShift) && camera.Zoom < 1)
+            {
+                camera.Zoom += 0.01f;
+
+                if (camera.Zoom > 1)
+                {
+                    camera.Zoom = 1;
+                }
+            }
+        }
+
+        private void SaveMap()
+        {
+            ks1 = Keyboard.GetState();
+
+            if (ks1.IsKeyDown(Keys.F1) && ks2.IsKeyUp(Keys.F1))
+            {
+                mapSaver.SaveMap(map.GetTiles());
+            }
+
+            ks2 = ks1;
+        }
+
+        private void DrawTiles(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            foreach (Tile tile in map.GetTiles())
+            {
+                if (tileRenderer.IsTileOnScreen(tile, player.Position, player.GetCenter(), camera.Zoom))
+                {
+                    tile.Draw(gameTime, spriteBatch, tileSet);
+                    tilesOnScreen++;
+                }
+            }
+        }
+
+        private void DrawComponents(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            foreach (Component component in components)
+            {
+                component.Draw(gameTime, spriteBatch);
+            }
         }
     }
 }
