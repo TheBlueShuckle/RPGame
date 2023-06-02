@@ -97,6 +97,7 @@ namespace RPGame.Scipts.Scenes
             DrawTiles(gameTime, spriteBatch);
             DrawComponents(gameTime, spriteBatch);
             spriteBatch.Draw(texture, new Rectangle((int)(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).X - (Main.Pixel / 2)), (int)(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).Y - (Main.Pixel / 2)), (int)Main.Pixel, (int)Main.Pixel), Color.White);
+            spriteBatch.Draw(texture, player.MeleeRange, Color.Red);
 
             spriteBatch.End();
 
@@ -223,9 +224,9 @@ namespace RPGame.Scipts.Scenes
 
             spriteBatch.DrawString(font, "" + tilesOnScreen, Vector2.Zero, Color.Black);
             spriteBatch.DrawString(font, "" + camera.Zoom, new Vector2(0, 100), Color.Black);
+            spriteBatch.DrawString(font, "" + player.LookingDirection, new Vector2(0, 200), Color.Black);
 
             spriteBatch.End();
         }
-
     }
 }

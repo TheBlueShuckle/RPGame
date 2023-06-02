@@ -77,7 +77,7 @@ namespace RPGame.Scipts
 
             ToggleEditMode();
 
-            ChangeScene();
+            ForceChangeScene();
 
             sceneHandler.GetCurrentScene(currentScene).Update(gameTime);
 
@@ -114,7 +114,7 @@ namespace RPGame.Scipts
             ks2 = ks1;
         }
 
-        private void ChangeScene()
+        private void ForceChangeScene()
         {
             sceneks1 = Keyboard.GetState();
 

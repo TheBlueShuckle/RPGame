@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace RPGame.Scipts.Handlers
 {
@@ -9,6 +10,7 @@ namespace RPGame.Scipts.Handlers
     {
         const float RUNNING_SPEED_MULTIPLIER = 2.5f;
         const bool OF = false;
+        const int UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4;
 
         float speed;
         Vector2 size, velocity, pos;
@@ -17,6 +19,8 @@ namespace RPGame.Scipts.Handlers
         public Vector2 Pos { get { return pos; } }
 
         public Rectangle Hitbox { get; set; }
+
+        public int LookingDirection = DOWN;
 
         public MovementHandler(float speed, Vector2 pos, Vector2 size)
         {
@@ -37,6 +41,7 @@ namespace RPGame.Scipts.Handlers
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.S) && (!CollidingUp(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.W;
+                LookingDirection = UP;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
@@ -57,6 +62,7 @@ namespace RPGame.Scipts.Handlers
             else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.LeftControl) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.S;
+                LookingDirection = DOWN;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
@@ -82,6 +88,7 @@ namespace RPGame.Scipts.Handlers
             if (Keyboard.GetState().IsKeyDown(Keys.A) && !Keyboard.GetState().IsKeyDown(Keys.D) && (!CollidingLeft(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.A;
+                LookingDirection = LEFT;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
@@ -102,6 +109,7 @@ namespace RPGame.Scipts.Handlers
             else if (Keyboard.GetState().IsKeyDown(Keys.D) && !Keyboard.GetState().IsKeyDown(Keys.A) && (!CollidingRight(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.D;
+                LookingDirection = RIGHT;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
