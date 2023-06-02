@@ -158,11 +158,12 @@ namespace RPGame.Scipts.Scenes
                 }
             }
 
-            else if (!Keyboard.GetState().IsKeyDown(Keys.W) &&
-                     !Keyboard.GetState().IsKeyDown(Keys.A) &&
-                     !Keyboard.GetState().IsKeyDown(Keys.S) &&
-                     !Keyboard.GetState().IsKeyDown(Keys.D) &&
-                     camera.Zoom < 1)
+            else if ((!Keyboard.GetState().IsKeyDown(Keys.LeftShift) ||
+                      (!Keyboard.GetState().IsKeyDown(Keys.W) &&
+                       !Keyboard.GetState().IsKeyDown(Keys.A) &&
+                       !Keyboard.GetState().IsKeyDown(Keys.S) &&
+                       !Keyboard.GetState().IsKeyDown(Keys.D))) &&
+                      camera.Zoom < 1)
             {
                 camera.Zoom += 0.01f;
 
