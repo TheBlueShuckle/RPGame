@@ -96,6 +96,7 @@ namespace RPGame.Scipts.Scenes
             map.Draw(spriteBatch);
             DrawTiles(gameTime, spriteBatch);
             DrawComponents(gameTime, spriteBatch);
+            spriteBatch.Draw(texture, new Rectangle(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).ToPoint(), new Point((int)Main.Pixel, (int)Main.Pixel)), Color.White);
 
             spriteBatch.End();
 
