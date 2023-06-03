@@ -26,7 +26,9 @@ namespace RPGame.Scipts.Components
 
         public override Rectangle Hitbox { get; set; }
 
-        public Rectangle MeleeRange { get; private set; }
+        public float Damage { get; set; }
+
+        public Rectangle MeleeRange { get; set; }
 
         public int LookingDirection { get; private set; }
 
@@ -42,18 +44,20 @@ namespace RPGame.Scipts.Components
 
             Position = movementHandler.Pos;
             Hitbox = movementHandler.Hitbox;
+            Damage = 10;
         }
 
         public override void Update(GameTime gameTime)
         {
-            movementHandler.Update(gameTime, impassableTiles);
+            if(gameTime.TotalGameTime.TotalMilliseconds > meleeCooldown)
+            {
+                movementHandler.Update(gameTime, impassableTiles);
+            }
 
             Position = movementHandler.Pos;
             Hitbox = movementHandler.Hitbox;
             LookingDirection = movementHandler.LookingDirection;
             spriteSize = new Rectangle(Hitbox.Center.X - spriteWidth / 2, Hitbox.Bottom - spriteHeight, spriteWidth, spriteHeight);
-
-            CheckMeleeAttack(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -87,11 +91,6 @@ namespace RPGame.Scipts.Components
                 }
 
                 meleeCooldown = gameTime.TotalGameTime.TotalMilliseconds + 500;
-            }
-
-            else if (gameTime.TotalGameTime.TotalMilliseconds > meleeCooldown)
-            {
-                MeleeRange = Rectangle.Empty;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Win32.SafeHandles;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,7 +8,9 @@ using RPGame.Scipts.Core;
 using RPGame.Scipts.Editing;
 using RPGame.Scipts.Handlers;
 using RPGame.Scipts.Sprites.Enemies;
+using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 
 namespace RPGame.Scipts.Scenes
@@ -55,11 +58,6 @@ namespace RPGame.Scipts.Scenes
 
             enemies.Add(new Slime(map.TileSize, new Vector2(map.TileSize, map.TileSize), texture));
 
-            foreach (Enemy enemy in enemies)
-            {
-                components.Add(enemy);
-            }
-
             components.Add(player);
         }
 
@@ -69,7 +67,7 @@ namespace RPGame.Scipts.Scenes
 
             if (!Main.EditMode)
             {
-                ZoomOutOnRun();
+                PlayMode(gameTime);
             }
 
             else
@@ -82,7 +80,15 @@ namespace RPGame.Scipts.Scenes
                 component.Update(gameTime);
             }
 
-            SaveMap();
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.Update(gameTime);
+            }
+
+            if (enemies.Count == 0)
+            {
+                enemies.Add(new Slime(map.TileSize, new Vector2(100, 100), texture));
+            }
 
             camera.Update(player.GetCenter().ToVector2());
         }
@@ -96,8 +102,11 @@ namespace RPGame.Scipts.Scenes
             map.Draw(spriteBatch);
             DrawTiles(gameTime, spriteBatch);
             DrawComponents(gameTime, spriteBatch);
+            DrawEnemies(gameTime, spriteBatch);
+
             spriteBatch.Draw(texture, new Rectangle((int)(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).X - (Main.Pixel / 2)), (int)(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).Y - (Main.Pixel / 2)), (int)Main.Pixel, (int)Main.Pixel), Color.White);
             spriteBatch.Draw(texture, player.MeleeRange, Color.Red);
+            player.MeleeRange = Rectangle.Empty;
 
             spriteBatch.End();
 
@@ -129,6 +138,31 @@ namespace RPGame.Scipts.Scenes
             }
         }
 
+        private void PlayMode(GameTime gameTime)
+        {
+            ZoomOutOnRun();
+
+            player.CheckMeleeAttack(gameTime);
+
+            foreach (Enemy enemy in enemies.ToList())
+            {
+                if (enemy.Hitbox.Intersects(player.MeleeRange))
+                {
+                    enemy.TakeDamage(player.Damage, gameTime);
+
+                    if (enemy.HP <= 0)
+                    {
+                        enemies.Remove(enemy);
+                    }
+                }
+
+                else
+                {
+                    enemy.HasTakenDamage = false;
+                }
+            }
+        }
+
         private void EditMode()
         {
             map.EditMap(lastPressedKey, camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()));
@@ -142,6 +176,8 @@ namespace RPGame.Scipts.Scenes
             {
                 camera.Zoom -= 0.01f;
             }
+
+            SaveMap();
         }
 
         private void ZoomOutOnRun()
@@ -215,6 +251,14 @@ namespace RPGame.Scipts.Scenes
             foreach (Component component in components)
             {
                 component.Draw(gameTime, spriteBatch);
+            }
+        }
+
+        private void DrawEnemies(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            foreach(Enemy enemy in enemies)
+            {
+                enemy.Draw(gameTime, spriteBatch);
             }
         }
 

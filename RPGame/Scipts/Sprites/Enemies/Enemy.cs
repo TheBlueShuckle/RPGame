@@ -10,8 +10,18 @@ namespace RPGame.Scipts.Sprites.Enemies
 {
     internal abstract class Enemy : Component
     {
+        public virtual Color EnemyColor { get; set; }
+
         public virtual float HP { get; set; }
 
         public virtual float Damage { get; set; }
+
+        public virtual bool HasTakenDamage { get; set; }
+
+
+        public virtual void TakeDamage(float damage, GameTime gameTime)
+        {
+            HP -= damage;
+        }
     }
 }

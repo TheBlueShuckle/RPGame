@@ -14,12 +14,17 @@ namespace RPGame.Scipts.Sprites.Enemies
     {
         Texture2D texture;
         Vector2 size = new Vector2(10 * Main.Pixel, 10 * Main.Pixel);
+        double damageCooldown;
 
         EnemyMovementHandler enemyMovementHandler;
+
+        public override Color EnemyColor { get; set; }
 
         public override float HP { get; set; }
 
         public override float Damage { get; set; }
+
+        public override bool HasTakenDamage { get; set; }
 
         public override Vector2 Position { get; set; }
 
@@ -28,7 +33,10 @@ namespace RPGame.Scipts.Sprites.Enemies
         public Slime(float tileSize, Vector2 pos, Texture2D texture)
         {
             Position = pos;
+            EnemyColor = Color.LightBlue;
             this.texture = texture;
+
+            HP = 100;
 
             enemyMovementHandler = new EnemyMovementHandler(tileSize * 2, pos, size);
 
@@ -41,11 +49,34 @@ namespace RPGame.Scipts.Sprites.Enemies
 
             Position = enemyMovementHandler.Position;
             Hitbox = enemyMovementHandler.Rectangle;
+
+            if (HasTakenDamage || damageCooldown >= gameTime.TotalGameTime.TotalMilliseconds)
+            {
+                EnemyColor = Color.Red;
+            }
+
+            else
+            {
+                EnemyColor = Color.LightBlue;
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Hitbox, Color.LightBlue);
+            spriteBatch.Draw(texture, Hitbox, EnemyColor);
+        }
+
+        public override void TakeDamage(float damage, GameTime gameTime)
+        {
+            if (damageCooldown <= gameTime.TotalGameTime.TotalMilliseconds)
+            {
+                HP -= damage;
+                damageCooldown = gameTime.TotalGameTime.TotalMilliseconds + 500;
+                HasTakenDamage = true;
+                return;
+            }
+
+            HasTakenDamage = false;
         }
 
         private Point GetCenter()
