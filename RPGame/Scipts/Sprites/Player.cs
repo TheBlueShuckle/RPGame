@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using RPGame.Scipts.Handlers;
 using System;
 using System.Collections.Generic;
@@ -9,37 +10,88 @@ namespace RPGame.Scipts.Components
 {
     internal class Player : Component
     {
+        const int UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4;
+
         MovementHandler movementHandler;
 
         Texture2D texture;
         List<Tile> impassableTiles;
+        Rectangle spriteSize;
 
-        public Vector2 Pos { get; private set; }
+        int spriteWidth, spriteHeight;
 
-        public Rectangle Rectangle { get; private set; }
+        double meleeCooldown;
 
-        public Player(int tileSize, List<Tile> impassableTiles, Texture2D texture)
+        public override Vector2 Position { get; set; }
+
+        public override Rectangle Hitbox { get; set; }
+
+        public float Damage { get; set; }
+
+        public Rectangle MeleeRange { get; set; }
+
+        public int LookingDirection { get; private set; }
+
+        public Player(float tileSize, List<Tile> impassableTiles, Texture2D texture)
         {
             this.impassableTiles = impassableTiles;
             this.texture = texture;
 
-            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(Main.ScreenWidth / 128, Main.ScreenWidth / 96));
+            spriteWidth = (int)(texture.Width * Main.Pixel);
+            spriteHeight = (int)(texture.Height * Main.Pixel);
 
-            Pos = movementHandler.Pos;
-            Rectangle = movementHandler.Hitbox;
+            movementHandler = new MovementHandler(tileSize * 3.3f, new Vector2(0, 0), new Vector2(16 * Main.Pixel, 16 * Main.Pixel));
+
+            Position = movementHandler.Pos;
+            Hitbox = movementHandler.Hitbox;
+            Damage = 10;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            movementHandler.Update(gameTime, impassableTiles);
+            if(gameTime.TotalGameTime.TotalMilliseconds > meleeCooldown)
+            {
+                movementHandler.Update(gameTime, impassableTiles);
+            }
 
-            Pos = movementHandler.Pos;
-            Rectangle = movementHandler.Hitbox;
+            Position = movementHandler.Pos;
+            Hitbox = movementHandler.Hitbox;
+            LookingDirection = movementHandler.LookingDirection;
+            spriteSize = new Rectangle(Hitbox.Center.X - spriteWidth / 2, Hitbox.Bottom - spriteHeight, spriteWidth, spriteHeight);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Rectangle, Color.Yellow);
+            spriteBatch.Draw(texture, spriteSize, Color.White);
+        }
+
+        public Point GetCenter()
+        {
+            return new Point((int)(Position.X + Hitbox.Width / 2), (int)(Position.Y + Hitbox.Height / 2));
+        }
+
+        public void CheckMeleeAttack(GameTime gameTime)
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && gameTime.TotalGameTime.TotalMilliseconds > meleeCooldown)
+            {
+                switch (LookingDirection)
+                {
+                    case UP:
+                        MeleeRange = new Rectangle((int)Position.X, (int)(Position.Y - (16 * Main.Pixel)), (int)(16 * Main.Pixel), (int)(16 * Main.Pixel));
+                        break;
+                    case DOWN:
+                        MeleeRange = new Rectangle((int)Position.X, (int)spriteSize.Bottom, (int)(16 * Main.Pixel), (int)(16 * Main.Pixel));
+                        break;
+                    case LEFT:
+                        MeleeRange = new Rectangle((int)(Position.X - 16 * Main.Pixel), (int)Position.Y, (int)(16 * Main.Pixel), (int)(16 * Main.Pixel));
+                        break;
+                    case RIGHT:
+                        MeleeRange = new Rectangle((int)spriteSize.Right, (int)Position.Y, (int)(16 * Main.Pixel), (int)(16 * Main.Pixel));
+                        break;
+                }
+
+                meleeCooldown = gameTime.TotalGameTime.TotalMilliseconds + 500;
+            }
         }
     }
 }

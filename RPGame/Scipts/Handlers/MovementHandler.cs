@@ -1,18 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
-using System;
 using System.Collections.Generic;
-using System.Transactions;
-using System.Xml.Serialization;
+using System.Dynamic;
 
 namespace RPGame.Scipts.Handlers
 {
     internal class MovementHandler
     {
-        const float RUNNING_SPEED_MULTIPLIER = 5;
+        const float RUNNING_SPEED_MULTIPLIER = 2.5f;
         const bool OF = false;
+        const int UP = 1, DOWN = 2, LEFT = 3, RIGHT = 4;
 
         float speed;
         Vector2 size, velocity, pos;
@@ -21,6 +19,8 @@ namespace RPGame.Scipts.Handlers
         public Vector2 Pos { get { return pos; } }
 
         public Rectangle Hitbox { get; set; }
+
+        public int LookingDirection = DOWN;
 
         public MovementHandler(float speed, Vector2 pos, Vector2 size)
         {
@@ -32,7 +32,7 @@ namespace RPGame.Scipts.Handlers
         public void Update(GameTime gameTime, List<Tile> impassableTiles)
         {
             Movement(gameTime, impassableTiles);
-            pos = new Vector2((float)Math.Round(Pos.X + velocity.X, 0), (float)Math.Round(Pos.Y + velocity.Y, 0));
+            pos = pos + velocity;
             Hitbox = new Rectangle(Pos.ToPoint(), size.ToPoint());
         }
 
@@ -41,11 +41,16 @@ namespace RPGame.Scipts.Handlers
             if (Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.S) && (!CollidingUp(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.W;
-                velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                LookingDirection = UP;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.Y = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.Y = (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds) * RUNNING_SPEED_MULTIPLIER;
+                }
+
+                else
+                {
+                    velocity.Y = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -54,14 +59,19 @@ namespace RPGame.Scipts.Handlers
                 }
             }
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !Keyboard.GetState().IsKeyDown(Keys.W) && !Keyboard.GetState().IsKeyDown(Keys.LeftControl) && (!CollidingDown(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.S;
-                velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                LookingDirection = DOWN;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.Y = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.Y = (speed * (float)gameTime.ElapsedGameTime.TotalSeconds) * RUNNING_SPEED_MULTIPLIER;
+                }
+
+                else
+                {
+                    velocity.Y = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -78,11 +88,16 @@ namespace RPGame.Scipts.Handlers
             if (Keyboard.GetState().IsKeyDown(Keys.A) && !Keyboard.GetState().IsKeyDown(Keys.D) && (!CollidingLeft(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.A;
-                velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                LookingDirection = LEFT;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
                     velocity.X = RUNNING_SPEED_MULTIPLIER * (-speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                }
+
+                else
+                {
+                    velocity.X = -speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -94,11 +109,16 @@ namespace RPGame.Scipts.Handlers
             else if (Keyboard.GetState().IsKeyDown(Keys.D) && !Keyboard.GetState().IsKeyDown(Keys.A) && (!CollidingRight(Hitbox, impassableTiles) || Main.EditMode))
             {
                 lastKey = Keys.D;
-                velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                LookingDirection = RIGHT;
 
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftShift))
                 {
-                    velocity.X = RUNNING_SPEED_MULTIPLIER * (speed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    velocity.X =  (speed * (float)gameTime.ElapsedGameTime.TotalSeconds) * RUNNING_SPEED_MULTIPLIER;
+                }
+
+                else
+                {
+                    velocity.X = speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
 
                 if (Main.EditMode == OF)
@@ -120,33 +140,33 @@ namespace RPGame.Scipts.Handlers
                 switch (lastKey)
                 {
                     case Keys.W:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesBottomOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesBottomOf(tile.ScaledRectangle()))
                         {
-                            pos.Y = tile.GetRectangle().Bottom;
+                            pos.Y = tile.ScaledRectangle().Bottom;
                             velocity.Y = 0;
                         }
                         break;
 
                     case Keys.S:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesTopOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesTopOf(tile.ScaledRectangle()))
                         {
-                            pos.Y = tile.GetRectangle().Y - Hitbox.Height;
+                            pos.Y = tile.ScaledRectangle().Y - Hitbox.Height;
                             velocity.Y = 0;
                         }
                         break;
 
                     case Keys.A:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesRightOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesRightOf(tile.ScaledRectangle()))
                         {
-                            pos.X = tile.GetRectangle().Right;
+                            pos.X = tile.ScaledRectangle().Right;
                             velocity.X = 0;
                         }
                         break;
 
                     case Keys.D:
-                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesLeftOf(tile.GetRectangle()))
+                        if (new Rectangle(Hitbox.X + (int)velocity.X, Hitbox.Y + (int)velocity.Y, (int)size.X, (int)size.Y).TouchesLeftOf(tile.ScaledRectangle()))
                         {
-                            pos.X = tile.GetRectangle().Left - Hitbox.Width;
+                            pos.X = tile.ScaledRectangle().Left - Hitbox.Width;
                             velocity.X = 0;
                         }
                         break;
@@ -158,7 +178,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesBottomOf(tile.GetRectangle()))
+                if (hitbox.TouchesBottomOf(tile.ScaledRectangle()))
                 {
                     return true;
                 }
@@ -171,7 +191,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesTopOf(tile.GetRectangle()))
+                if (hitbox.TouchesTopOf(tile.ScaledRectangle()))
                 {
                     return true;
                 }
@@ -184,7 +204,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesLeftOf(tile.GetRectangle()))
+                if (hitbox.TouchesLeftOf(tile.ScaledRectangle()))
                 {
                     return true;
                 }
@@ -197,7 +217,7 @@ namespace RPGame.Scipts.Handlers
         {
             foreach (Tile tile in impassabeTiles)
             {
-                if (hitbox.TouchesRightOf(tile.GetRectangle()))
+                if (hitbox.TouchesRightOf(tile.ScaledRectangle()))
                 {
                     return true;
                 }

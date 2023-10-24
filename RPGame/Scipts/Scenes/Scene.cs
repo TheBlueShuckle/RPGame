@@ -1,19 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Drawing;
 
 namespace RPGame.Scipts.Scenes
 {
-    internal class Scene
+    internal abstract class Scene
     {
-        public Scene()
+        public virtual void LoadContent(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
-
-        }
-
-        public virtual void LoadContent(GraphicsDevice GraphicsDevice, Texture2D texture)
-        {
-
+            LoadTextures(GraphicsDevice, Content);
         }
 
         public virtual void Update(GameTime gameTime)
@@ -25,5 +23,7 @@ namespace RPGame.Scipts.Scenes
         {
 
         }
+
+        protected abstract void LoadTextures(GraphicsDevice GraphicsDevice, ContentManager Content);
     }
 }

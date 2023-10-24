@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,46 +6,44 @@ using RPGame.Scipts.Components;
 using RPGame.Scipts.Core;
 using RPGame.Scipts.Editing;
 using RPGame.Scipts.Handlers;
-using RPGame.Scipts.Sprites.Enemies;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace RPGame.Scipts.Scenes
 {
-    internal class Scene1 : Scene
+    internal class Scene2 : Scene
     {
-        const string FILE_NAME = "TileMaps\\scene1.json";
+        const string FILE_NAME = "TileMaps\\scene2.json";
 
         Player player;
         Map map;
         MapSaver mapSaver;
         TileRenderer tileRenderer;
 
-        List<Enemy> enemies = new List<Enemy>();
         List<Component> components;
 
-        KeyboardState ks1, ks2;
-        Keys lastPressedKey;
         Texture2D texture, tileSet;
         SpriteFont font;
 
-        int tilesOnScreen = 0;
-
         Camera camera;
 
+        int tilesOnScreen;
+        Keys lastPressedKey;
+        KeyboardState ks1, ks2;
 
-        public Scene1() : base()
+        public Scene2() : base()
         {
-
+            
         }
 
         public override void LoadContent(GraphicsDevice GraphicsDevice, ContentManager Content)
         {
             LoadTextures(GraphicsDevice, Content);
 
-            map = new Map(texture, new int[] { 128, 72 });
+            map = new Map(texture, new int[] { 64, 128 });
             mapSaver = new MapSaver(FILE_NAME);
             map.GenerateMap(mapSaver.LoadMap());
 
@@ -55,8 +52,6 @@ namespace RPGame.Scipts.Scenes
 
             player = new Player(map.TileSize, map.GetImpassableTiles(), Content.Load<Texture2D>("Sprites/Player"));
             components = new List<Component>();
-
-            enemies.Add(new Slime(map.TileSize, new Vector2(map.TileSize, map.TileSize), texture));
 
             components.Add(player);
         }
@@ -67,7 +62,7 @@ namespace RPGame.Scipts.Scenes
 
             if (!Main.EditMode)
             {
-                PlayMode(gameTime);
+                ZoomOutOnRun();
             }
 
             else
@@ -80,15 +75,7 @@ namespace RPGame.Scipts.Scenes
                 component.Update(gameTime);
             }
 
-            foreach (Enemy enemy in enemies)
-            {
-                enemy.Update(gameTime);
-            }
-
-            if (enemies.Count == 0)
-            {
-                enemies.Add(new Slime(map.TileSize, new Vector2(100, 100), texture));
-            }
+            SaveMap();
 
             camera.Update(player.GetCenter().ToVector2());
         }
@@ -102,11 +89,6 @@ namespace RPGame.Scipts.Scenes
             map.Draw(spriteBatch);
             DrawTiles(gameTime, spriteBatch);
             DrawComponents(gameTime, spriteBatch);
-            DrawEnemies(gameTime, spriteBatch);
-
-            spriteBatch.Draw(texture, new Rectangle((int)(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).X - (Main.Pixel / 2)), (int)(camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()).Y - (Main.Pixel / 2)), (int)Main.Pixel, (int)Main.Pixel), Color.White);
-            spriteBatch.Draw(texture, player.MeleeRange, Color.Red);
-            player.MeleeRange = Rectangle.Empty;
 
             spriteBatch.End();
 
@@ -138,31 +120,6 @@ namespace RPGame.Scipts.Scenes
             }
         }
 
-        private void PlayMode(GameTime gameTime)
-        {
-            ZoomOutOnRun();
-
-            player.CheckMeleeAttack(gameTime);
-
-            foreach (Enemy enemy in enemies.ToList())
-            {
-                if (enemy.Hitbox.Intersects(player.MeleeRange))
-                {
-                    enemy.TakeDamage(player.Damage, gameTime);
-
-                    if (enemy.HP <= 0)
-                    {
-                        enemies.Remove(enemy);
-                    }
-                }
-
-                else
-                {
-                    enemy.HasTakenDamage = false;
-                }
-            }
-        }
-
         private void EditMode()
         {
             map.EditMap(lastPressedKey, camera.ScreenToWorldSpace(Mouse.GetState().Position.ToVector2()));
@@ -176,8 +133,6 @@ namespace RPGame.Scipts.Scenes
             {
                 camera.Zoom -= 0.01f;
             }
-
-            SaveMap();
         }
 
         private void ZoomOutOnRun()
@@ -196,12 +151,11 @@ namespace RPGame.Scipts.Scenes
                 }
             }
 
-            else if ((!Keyboard.GetState().IsKeyDown(Keys.LeftShift) ||
-                      (!Keyboard.GetState().IsKeyDown(Keys.W) &&
-                       !Keyboard.GetState().IsKeyDown(Keys.A) &&
-                       !Keyboard.GetState().IsKeyDown(Keys.S) &&
-                       !Keyboard.GetState().IsKeyDown(Keys.D))) &&
-                      camera.Zoom < 1)
+            else if (!Keyboard.GetState().IsKeyDown(Keys.W) &&
+                     !Keyboard.GetState().IsKeyDown(Keys.A) &&
+                     !Keyboard.GetState().IsKeyDown(Keys.S) &&
+                     !Keyboard.GetState().IsKeyDown(Keys.D) &&
+                     camera.Zoom < 1)
             {
                 camera.Zoom += 0.01f;
 
@@ -254,21 +208,12 @@ namespace RPGame.Scipts.Scenes
             }
         }
 
-        private void DrawEnemies(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            foreach(Enemy enemy in enemies)
-            {
-                enemy.Draw(gameTime, spriteBatch);
-            }
-        }
-
         private void DrawHUD(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
 
             spriteBatch.DrawString(font, "" + tilesOnScreen, Vector2.Zero, Color.Black);
             spriteBatch.DrawString(font, "" + camera.Zoom, new Vector2(0, 100), Color.Black);
-            spriteBatch.DrawString(font, "" + player.LookingDirection, new Vector2(0, 200), Color.Black);
 
             spriteBatch.End();
         }

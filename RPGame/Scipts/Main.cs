@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using RPGame.Scipts.Components;
 using RPGame.Scipts.Handlers;
 using RPGame.Scipts.Scenes;
-using SharpDX.Direct2D1.Effects;
-using SharpDX.MediaFoundation;
 using System.CodeDom;
 using System.Collections.Generic;
 
@@ -19,14 +17,15 @@ namespace RPGame.Scipts
 
         public static int ScreenWidth;
         public static int ScreenHeight;
+        public static float Pixel;
+
         public static SpriteFont Font { get; set; }
         public static bool EditMode { get; set; }
 
-        Rectangle windowSize;
         Texture2D texture;
-        Scene1 scene1;
 
-        KeyboardState ks1, ks2;
+        KeyboardState ks1, ks2, sceneks1, sceneks2;
+        int currentScene = 0;
 
         public Main()
         {
@@ -36,13 +35,22 @@ namespace RPGame.Scipts
         }
 
         protected override void Initialize()
-        {            
+        {
+            sceneHandler = new SceneHandler();
+
             EditMode = false;
 
             graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             graphics.ApplyChanges();
+
+            graphics.HardwareModeSwitch = false;
+
+            ScreenWidth = graphics.PreferredBackBufferWidth;
+            ScreenHeight = graphics.PreferredBackBufferHeight;
+
+            Pixel = (float)ScreenWidth / 512;
 
             base.Initialize();
         }
@@ -56,14 +64,9 @@ namespace RPGame.Scipts
 
             Font = Content.Load<SpriteFont>("Font/Font");
 
-            ScreenWidth = graphics.PreferredBackBufferWidth;
-            ScreenHeight = graphics.PreferredBackBufferHeight;
-
-            sceneHandler = new SceneHandler();
-
-            foreach (Scene1 scene in sceneHandler.GetScenes)
+            foreach (Scene scene in sceneHandler.GetScenes)
             {
-                scene.LoadContent(GraphicsDevice, texture);
+                scene.LoadContent(GraphicsDevice, Content);
             }
         }
 
@@ -72,6 +75,35 @@ namespace RPGame.Scipts
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            ToggleEditMode();
+
+            ForceChangeScene();
+
+            sceneHandler.GetCurrentScene(currentScene).Update(gameTime);
+
+            base.Update(gameTime);
+        }
+        
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Black);
+
+            sceneHandler.GetCurrentScene(currentScene).Draw(gameTime, spriteBatch);
+
+            spriteBatch.Begin();
+
+            if (EditMode)
+            {
+                DrawCrosshair();
+            }
+
+            spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
+        private void ToggleEditMode()
+        {
             ks1 = Keyboard.GetState();
 
             if (ks1.IsKeyDown(Keys.Space) && ks2.IsKeyUp(Keys.Space))
@@ -80,29 +112,29 @@ namespace RPGame.Scipts
             }
 
             ks2 = ks1;
-
-            sceneHandler.GetCurrentScene().Update(gameTime);
-
-            base.Update(gameTime);
         }
-        
-        protected override void Draw(GameTime gameTime)
+
+        private void ForceChangeScene()
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            sceneks1 = Keyboard.GetState();
 
-            sceneHandler.GetCurrentScene().Draw(gameTime, spriteBatch);
-
-            spriteBatch.Begin();
-
-            if (EditMode)
+            if (sceneks1.IsKeyDown(Keys.F12) && sceneks2.IsKeyUp(Keys.F12))
             {
-                spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 1, (ScreenHeight / 2) - 10, 2, 20), Color.Black);
-                spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 10, (ScreenHeight / 2) - 1, 20, 2), Color.Black);
+                currentScene += 1;
+
+                if (currentScene > sceneHandler.GetScenes.Count - 1)
+                {
+                    currentScene = 0;
+                }
             }
 
-            spriteBatch.End();
+            sceneks2 = sceneks1;
+        }
 
-            base.Draw(gameTime);
+        private void DrawCrosshair()
+        {
+            spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 2, (ScreenHeight / 2) - 10, 4, 20), Color.Black);
+            spriteBatch.Draw(texture, new Rectangle((ScreenWidth / 2) - 10, (ScreenHeight / 2) - 2, 20, 4), Color.Black);
         }
     }
 }
